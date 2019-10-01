@@ -53,6 +53,12 @@ namespace bdlearn {
         }
     }
 
+    BMat operator%(const BMat& a, const BMat& b) {
+        // naive implementation
+        BMat temp(a.rows_, b.cols_);
+        return temp;
+    }
+
     std::ostream& operator<<(std::ostream& os, const BMat& bmat) { 
         for (size_t r = 0; r < bmat.rows_; ++r) {
             size_t bot_margin = bmat.rows_ - PRINT_UNITS - 1;

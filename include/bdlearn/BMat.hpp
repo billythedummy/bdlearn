@@ -21,7 +21,9 @@ namespace bdlearn {
             void zeros();
             void ones();
         
-        // operators
+        // friend operators
+        // Mat mul
+        friend BMat operator%(const BMat& a, const BMat& b);
         friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
 
 
@@ -31,6 +33,7 @@ namespace bdlearn {
             size_t cols_;
             size_t size_;
             size_t bytes_;
+            BMat& operator=(const BMat& ref) = delete;
     };
 }
 
