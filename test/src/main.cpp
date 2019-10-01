@@ -2,9 +2,11 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
-    bdlearn::BMat orig(1, 1);
+    bdlearn::BMat orig(12, 11);
+    orig.ones();
     bdlearn::BMat copy(orig);
-    std::cout << orig.IsEqual(copy) << std::endl;
-    //std::cout << "fuck" << std::endl;
+    //std::cout << orig.isEqual(copy) << std::endl;
+    std::cout << orig << std::endl;
+    std::cout << copy << std::endl;
     return 0;
 }

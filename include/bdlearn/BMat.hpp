@@ -2,6 +2,7 @@
 #define _BDLEARN_BMAT_H_
 
 #include <cstddef>
+#include <iostream>
 
 namespace bdlearn {
     class BMat {
@@ -16,10 +17,16 @@ namespace bdlearn {
             virtual ~BMat();
 
         // public functions
-            bool IsEqual(const BMat& comp);
+            bool isEqual(const BMat& comp);
+            void zeros();
+            void ones();
+        
+        // operators
+        friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
+
 
         private:
-            char* data_;
+            unsigned char* data_;
             size_t rows_;
             size_t cols_;
             size_t size_;
