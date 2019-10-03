@@ -8,17 +8,19 @@ namespace bdlearn {
     BMat::BMat(size_t rows, size_t cols) {
         rows_ = rows;
         cols_ = cols;
+        bytes_per_row_ = cols_ / 8;
+        if (cols_ % 8) {
+            ++bytes_per_row_;
+        }
         size_ = rows * cols;
-        bytes_ = size_ / 8;
-        if (size_ % 8) { // not divisible by 8
-            ++bytes_;
-        } 
+        bytes_ = rows * bytes_per_row_;
         data_ = new unsigned char[bytes_];
     }
 
     BMat::BMat(const BMat& copy) {
         rows_ = copy.rows_;
         cols_ = copy.cols_;
+        bytes_per_row_ = copy.bytes_per_row_;
         size_ = copy.size_;
         bytes_ = copy.bytes_;
         data_ = new unsigned char[bytes_];
@@ -29,12 +31,12 @@ namespace bdlearn {
         delete[] data_;
     }
 
-    bool BMat::isEqual(const BMat& comp) {
-        if (rows_ != comp.rows_ || cols_ != comp.cols_) {
+    bool operator==(const BMat& a, const BMat& b) {
+        if (a.rows_ != b.rows_ || a.cols_ != b.cols_) {
             return false;
         }
-        for (size_t i = 0; i < bytes_; ++i) {
-            if (data_[i] != comp.data_[i]) {
+        for (size_t i = 0; i < a.bytes_; ++i) {
+            if (a.data_[i] != b.data_[i]) {
                 return false;
             }
         }
@@ -53,13 +55,7 @@ namespace bdlearn {
         }
     }
 
-    BMat operator%(const BMat& a, const BMat& b) {
-        // naive implementation
-        BMat temp(a.rows_, b.cols_);
-        return temp;
-    }
-
-    std::ostream& operator<<(std::ostream& os, const BMat& bmat) { 
+    std::ostream& operator<<(std::ostream& os, const BMat& bmat) {
         for (size_t r = 0; r < bmat.rows_; ++r) {
             size_t bot_margin = bmat.rows_ - PRINT_UNITS - 1;
             if (r > PRINT_UNITS - 1 && bmat.rows_ > 2*PRINT_UNITS && r < bot_margin) {
@@ -74,11 +70,12 @@ namespace bdlearn {
                         os << " . . . ";
                         c = right_margin;
                     } else {
-                        size_t bit_index = r * bmat.cols_ + c;
-                        size_t byte_index = bit_index / 8;
-                        size_t offset = bit_index % 8;
-                        unsigned char mask = 0x80 >> offset;
-                        unsigned char printed = (bmat.data_[byte_index] & mask) >> (7 - offset);
+                        size_t row_bytes_traversed = r * bmat.bytes_per_row_;
+                        size_t col_bytes_traversed = c / 8;
+                        size_t offset_in_byte = c % 8;
+                        size_t byte_index = row_bytes_traversed + col_bytes_traversed;
+                        unsigned char mask = 0x80 >> offset_in_byte;
+                        unsigned char printed = (bmat.data_[byte_index] & mask) >> (7 - offset_in_byte);
                         os << " " << (unsigned int) printed << " ";
                     }
                 }

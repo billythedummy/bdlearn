@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace bdlearn {
+    // All rows of BMats are byte-aligned, so each row is padded out on the right
     class BMat {
         public:
         // Constructors
@@ -17,13 +18,12 @@ namespace bdlearn {
             virtual ~BMat();
 
         // public functions
-            bool isEqual(const BMat& comp);
             void zeros();
             void ones();
         
         // friend operators
         // Mat mul
-        friend BMat operator%(const BMat& a, const BMat& b);
+        friend bool operator==(const BMat& a, const BMat& b);
         friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
 
 
@@ -31,6 +31,7 @@ namespace bdlearn {
             unsigned char* data_;
             size_t rows_;
             size_t cols_;
+            size_t bytes_per_row_;
             size_t size_;
             size_t bytes_;
             BMat& operator=(const BMat& ref) = delete;
