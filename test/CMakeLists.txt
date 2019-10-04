@@ -1,5 +1,7 @@
 # target
-add_executable(bdlearn_test src/main.cpp)
+add_executable(bdlearn_test src/main.cpp
+    src/BMat_basic.cpp
+)
 
 # link to main lib
 target_link_libraries(bdlearn_test bdlearn)

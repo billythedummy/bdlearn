@@ -1,14 +1,11 @@
 #include <bdlearn/bdlearn.hpp>
 #include <iostream>
+#include "BMat_basic.hpp"
 
 using namespace bdlearn;
 
 int main(int argc, char **argv) {
-    BMat orig(2, 4);
-    orig.ones();
-    BMat copy(orig);
-    //std::cout << (orig == copy) << std::endl;
-    std::cout << orig << std::endl;
-    //std::cout << copy << std::endl;
+    if (test_BMat_copy_and_equals())
+        return -1;
     return 0;
 }

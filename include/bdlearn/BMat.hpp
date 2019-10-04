@@ -14,7 +14,7 @@ namespace bdlearn {
             // copy
             BMat(const BMat& copy);
 
-        // Destructors
+        // Destructor
             virtual ~BMat();
 
         // public functions

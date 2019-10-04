@@ -5,7 +5,7 @@ project(bdlearn VERSION 0.0.0 LANGUAGES CXX)
 
 # create target
 add_library(bdlearn
-    src/BMat.cpp
+    src/core/BMat.cpp
 )
 
 # include
