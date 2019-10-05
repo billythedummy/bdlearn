@@ -1,6 +1,7 @@
 #include <string.h>
-#include "bdlearn/BMat.hpp"
 #include <iostream>
+#include "bdlearn/BMat.hpp"
+#include "libpopcnt.h"
 
 #define PRINT_UNITS 5
 
