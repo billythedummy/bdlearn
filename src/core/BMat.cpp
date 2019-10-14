@@ -1,5 +1,6 @@
 #include <string.h>
 #include <iostream>
+#include <bitset>
 #include "bdlearn/BMat.hpp"
 #include "libpopcnt.h"
 
@@ -125,7 +126,7 @@ namespace bdlearn {
 
     void matmul(float* dest, const BMat& A, const BMat& B) {
         // no dimension checking
-        // A - m x k, b - k x n
+        // A - m x k, B - k x n, C - m x n
         size_t m, k, n, A_bpr, B_bpr, row_remainder;
         m = A.rows_;
         k = A.cols_; // B.rows_
@@ -137,13 +138,16 @@ namespace bdlearn {
         unsigned char a, b;
         unsigned char* p_a = A.data_.get();
         unsigned char* p_b = B.data_.get();
+        unsigned char* p_b_row;
         for (size_t y = 0; y < m; ++y) {
             for (size_t x = 0; x < n; ++x) {
                 dot_sum = 0;
-
+                p_b_row = p_b; // keep track of original pointer before vertical advancement
+                // Inner loop + edge iterates through yth row of A and xth row of B
+                // and computes dot product byte by byte
                 for (size_t z = 0; z < (A_bpr - 1); ++z) {
                     a = *p_a;
-                    b = make_col_btye(p_b, x, B_bpr, 8);
+                    b = make_col_btye(p_b, x % 8, B_bpr, 8);
                     // xnor and popcount
                     b = ~(a ^ b);
                     dot_sum += ((float) (2 * popcnt(&b, 1))) - 8;
@@ -153,8 +157,7 @@ namespace bdlearn {
                 }
                 // edge case, final byte of row
                 a = *p_a;
-                b = make_col_btye(p_b, x, B_bpr, 8 - row_remainder);
-                std::cout << (unsigned int) b << ", " << x << std::endl;
+                b = make_col_btye(p_b, x % 8, B_bpr, 8 - row_remainder);
                 // xnor and popcount
                 b = ~(a ^ b);
                 dot_sum += ((float) (2 * popcnt(&b, 1))) - 8 - row_remainder;
@@ -162,9 +165,14 @@ namespace bdlearn {
                 // update entry of dest
                 dest[y*n + x] = dot_sum;
                 p_a -= A_bpr - 1; // reset to start of row of A for next col of B
-                p_b = B.data_.get() + x; // advance to next col of B
+                // reset to top of matrix
+                p_b = p_b_row;
+                if (x % 8 == 7) { // advance to next byte to build next col of B
+                    ++p_b;
+                }
             }
             p_a += A_bpr; // advance to next row of A
+            p_b = B.data_.get(); // reset to 0th column for B
         }
     }
 }
