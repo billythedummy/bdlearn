@@ -6,6 +6,9 @@
 #define PRINT_UNITS 5
 
 namespace bdlearn {
+
+    // Constructors
+
     BMat::BMat(size_t rows, size_t cols) {
         rows_ = rows;
         cols_ = cols;
@@ -15,7 +18,8 @@ namespace bdlearn {
         }
         size_ = rows * cols;
         bytes_ = rows * bytes_per_row_;
-        data_ = new unsigned char[bytes_];
+        data_.reset(new unsigned char[bytes_]);
+        zeros();
     }
 
     BMat::BMat(const BMat& copy) {
@@ -24,13 +28,40 @@ namespace bdlearn {
         bytes_per_row_ = copy.bytes_per_row_;
         size_ = copy.size_;
         bytes_ = copy.bytes_;
-        data_ = new unsigned char[bytes_];
-        memcpy(data_, copy.data_, bytes_);
+        data_.reset(new unsigned char[bytes_]);
+        memcpy(data_.get(), copy.data_.get(), bytes_);
     }
 
+    // Destructor
+
     BMat::~BMat() {
-        delete[] data_;
+        data_.reset();
     }
+
+    // Public functions
+
+    void BMat::zeros() {
+        unsigned char* p = data_.get();
+        for (size_t i = 0; i < bytes_; ++i) {
+            *p = 0x00;
+            ++p;
+        }
+    }
+
+    void BMat::ones() {
+        unsigned char* p = data_.get();
+        size_t row_remainder = bytes_per_row_ * 8 - cols_;
+        for (size_t i = 0; i < rows_; ++i) {
+            for (size_t j = 0; j < (bytes_per_row_ - 1); ++j) {
+                *p = 0xFF;
+                ++p;
+            }
+            *p = (0xFF << row_remainder);
+            ++p;
+        }
+    }
+
+    // Friend operators
 
     bool operator==(const BMat& a, const BMat& b) {
         if (a.rows_ != b.rows_ || a.cols_ != b.cols_) {
@@ -42,18 +73,6 @@ namespace bdlearn {
             }
         }
         return true;
-    }
-
-    void BMat::zeros() {
-        for (size_t i = 0; i < bytes_; ++i) {
-            *(data_ + i) = 0x00;
-        }
-    }
-
-    void BMat::ones() {
-        for (size_t i = 0; i < bytes_; ++i) {
-            *(data_ + i) = 0xFF;
-        }
     }
 
     std::ostream& operator<<(std::ostream& os, const BMat& bmat) {
@@ -84,5 +103,68 @@ namespace bdlearn {
             os << std::endl;
         }
         return os;
+    }
+
+    static inline unsigned char make_col_btye(unsigned char* data,
+                                                uint8_t bit_index,
+                                                size_t bytes_per_row,
+                                                uint8_t bits_to_take) {
+        // bit_index is from left (MSB)
+        unsigned char res = 0x00;
+        unsigned char masks[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+        unsigned char mask = masks[bit_index];
+        uint8_t bit_index_shift = 7 - bit_index;
+        for (uint8_t i = 0; i < (bits_to_take - 1); ++i) {
+            res |= (*data & mask) >> bit_index_shift;
+            res = res << 1;
+            data += bytes_per_row;
+        }
+        res |= (*data & mask) >> bit_index_shift;
+        return res << (8 - bits_to_take);
+    }
+
+    void matmul(float* dest, const BMat& A, const BMat& B) {
+        // no dimension checking
+        // A - m x k, b - k x n
+        size_t m, k, n, A_bpr, B_bpr, row_remainder;
+        m = A.rows_;
+        k = A.cols_; // B.rows_
+        n = B.cols_;
+        A_bpr = A.bytes_per_row_;
+        B_bpr = B.bytes_per_row_;
+        row_remainder = A_bpr * 8 - k;
+        float dot_sum;
+        unsigned char a, b;
+        unsigned char* p_a = A.data_.get();
+        unsigned char* p_b = B.data_.get();
+        for (size_t y = 0; y < m; ++y) {
+            for (size_t x = 0; x < n; ++x) {
+                dot_sum = 0;
+
+                for (size_t z = 0; z < (A_bpr - 1); ++z) {
+                    a = *p_a;
+                    b = make_col_btye(p_b, x, B_bpr, 8);
+                    // xnor and popcount
+                    b = ~(a ^ b);
+                    dot_sum += ((float) (2 * popcnt(&b, 1))) - 8;
+                    // advance to next byte of A's row and 8-column of B
+                    ++p_a;
+                    p_b += 8 * B_bpr;
+                }
+                // edge case, final byte of row
+                a = *p_a;
+                b = make_col_btye(p_b, x, B_bpr, 8 - row_remainder);
+                std::cout << (unsigned int) b << ", " << x << std::endl;
+                // xnor and popcount
+                b = ~(a ^ b);
+                dot_sum += ((float) (2 * popcnt(&b, 1))) - 8 - row_remainder;
+
+                // update entry of dest
+                dest[y*n + x] = dot_sum;
+                p_a -= A_bpr - 1; // reset to start of row of A for next col of B
+                p_b = B.data_.get() + x; // advance to next col of B
+            }
+            p_a += A_bpr; // advance to next row of A
+        }
     }
 }

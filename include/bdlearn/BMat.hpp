@@ -3,13 +3,14 @@
 
 #include <cstddef>
 #include <iostream>
+#include <memory>
 
 namespace bdlearn {
-    // All rows of BMats are byte-aligned, so each row is padded out on the right
+    // All rows of BMats are byte-aligned, so each row is zero-padded out on the right
     class BMat {
         public:
         // Constructors
-            // default - uninitialized memory
+            // default - zero initialized
             BMat(size_t rows, size_t cols);
             // copy
             BMat(const BMat& copy);
@@ -22,18 +23,19 @@ namespace bdlearn {
             void ones();
         
         // friend operators
-        // Mat mul
         friend bool operator==(const BMat& a, const BMat& b);
         friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
+        // C += A @ B
+        friend void matmul(float* dest, const BMat& A, const BMat& B);
 
 
         private:
-            unsigned char* data_;
+            std::unique_ptr<unsigned char[]> data_;
             size_t rows_;
             size_t cols_;
             size_t bytes_per_row_;
-            size_t size_;
-            size_t bytes_;
+            size_t size_; // rows * cols
+            size_t bytes_; // rows * bytes_per_row
             BMat& operator=(const BMat& ref) = delete;
     };
 }
