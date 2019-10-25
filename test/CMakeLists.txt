@@ -1,6 +1,7 @@
 # target
 add_executable(bdlearn_test src/main.cpp
     src/BMat_basic.cpp
+    src/Halide_test.cpp
 )
 
 # link to main lib

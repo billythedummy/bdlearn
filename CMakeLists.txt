@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.5)
 project(bdlearn VERSION 0.0.0 LANGUAGES CXX)
 
-# dependencies
-
 # create target
 add_library(bdlearn
     src/core/BMat.cpp
+)
+
+# dependencies
+target_link_libraries(bdlearn
+    Halide
 )
 
 # include
