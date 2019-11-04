@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include "Halide.h"
 
 namespace bdlearn {
     // All rows of BMats are byte-aligned, so each row is zero-padded out on the right
@@ -21,21 +22,22 @@ namespace bdlearn {
         // public functions
             void zeros();
             void ones();
+            void random();
+            size_t rows() const;
+            size_t cols() const;
         
         // friend operators
         friend bool operator==(const BMat& a, const BMat& b);
         friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
         // C += A @ B
-        friend void matmul(float* dest, const BMat& A, const BMat& B);
+        friend void matmul(Halide::Buffer<int>* dest, const BMat& A, const BMat& B);
 
 
         private:
-            std::unique_ptr<unsigned char[]> data_;
+            std::unique_ptr<uint8_t[]> data_;
             size_t rows_;
             size_t cols_;
-            size_t bytes_per_row_;
             size_t size_; // rows * cols
-            size_t bytes_; // rows * bytes_per_row
             BMat& operator=(const BMat& ref) = delete;
     };
 }
