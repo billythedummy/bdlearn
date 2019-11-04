@@ -1,6 +1,7 @@
 #include <string.h>
 #include <iostream>
 #include <bitset>
+#include <ctime>
 #include "bdlearn/BMat.hpp"
 #include "libpopcnt.h"
 
@@ -63,7 +64,8 @@ namespace bdlearn {
         Halide::Buffer<uint8_t> view(data_.get(), size_, "view");
         Halide::Var i;
         // Algo
-        Halide::Expr rand = (Halide::random_uint() / 10) % 2;
+        Halide::Expr seed = (int) time(NULL);
+        Halide::Expr rand = (Halide::random_uint(seed) / 10) % 2;
         Halide::Func set;
         set(i) = Halide::cast<uint8_t>(rand);
         // Schedule
