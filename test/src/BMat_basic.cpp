@@ -25,10 +25,10 @@ int test_BMat_matmul_simple() {
     s2.random();
     std::cout << s1 << std::endl;
     std::cout << s2 << std::endl;
-    int res[m*n];
-    Halide::Buffer<int> res_buf(res, n, m, "res_buf");
+    float res[m*n];
+    Halide::Buffer<float> res_buf(res, n, m, "res_buf");
     matmul(&res_buf, s1, s2);
-    int* disp = res;
+    float* disp = res;
     
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
