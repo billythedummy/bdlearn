@@ -29,7 +29,7 @@ int test_BMat_matmul_simple() {
     Halide::Buffer<float> res_buf(res, n, m, "res_buf");
     matmul(&res_buf, s1, s2);
     float* disp = res;
-    
+    /*
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
             std::cout << *disp << " ";
@@ -37,14 +37,19 @@ int test_BMat_matmul_simple() {
         }
         std::cout << std::endl;
     }
+    */
 
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
             float sum = 0.0;
             for (size_t x = 0; x < k; x++) {
-                sum += s1.get(i, x) * s2.get(x, j);
+                uint8_t t1 = s1.get(i, x);
+                uint8_t t2 = s2.get(x, j);
+                sum += (t1 ? 1 : -1) * (t2 ? 1 : -1);
             }
-            std::cout << i << j << sum << std::endl;
+            std::cout << i << j << sum << *disp << std::endl;
+            assert(*disp == sum);
+            ++disp;
         }
     }
     return 0;
