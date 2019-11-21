@@ -81,6 +81,10 @@ namespace bdlearn {
         return cols_;
     }
 
+    uint8_t BMat::get(int row, int col) const {
+        return data_.get()[row * cols_ + col];
+    }
+
     // Friend operators
 
     bool operator==(const BMat& a, const BMat& b) {

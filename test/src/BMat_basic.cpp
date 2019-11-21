@@ -37,6 +37,16 @@ int test_BMat_matmul_simple() {
         }
         std::cout << std::endl;
     }
+
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            float sum = 0.0;
+            for (size_t x = 0; x < k; x++) {
+                sum += s1.get(i, x) * s2.get(x, j);
+            }
+            std::cout << i << j << sum << std::endl;
+        }
+    }
     return 0;
 }
 
