@@ -30,12 +30,28 @@ int test_BMat_matmul_simple() {
     matmul(&res_buf, s1, s2);
     float* disp = res;
     
+    /*
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
             std::cout << *disp << " ";
             ++disp;
         }
         std::cout << std::endl;
+    }
+    */
+
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            float sum = 0.0;
+            for (size_t x = 0; x < k; x++) {
+                uint8_t t1 = s1.get(i, x);
+                uint8_t t2 = s2.get(x, j);
+                sum += (t1 ? 1 : -1) * (t2 ? 1 : -1);
+            }
+            std::cout << i << j << sum << *disp << std::endl;
+            assert(*disp == sum);
+            ++disp;
+        }
     }
     return 0;
 }
