@@ -30,8 +30,7 @@ namespace bdlearn {
         friend bool operator==(const BMat& a, const BMat& b);
         friend std::ostream& operator<<(std::ostream& os, const BMat& bmat);
         // C += A @ B
-        friend void matmul(Halide::Buffer<int>* dest, const BMat& A, const BMat& B);
-
+        friend void matmul(Halide::Buffer<float>* dest, const BMat& A, const BMat& B);
 
         private:
             std::unique_ptr<uint8_t[]> data_;
