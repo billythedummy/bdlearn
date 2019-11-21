@@ -17,18 +17,18 @@ int test_BMat_copy_and_equals() {
 
 int test_BMat_matmul_simple() {
     size_t m = 3; 
-    size_t k = 5;
-    size_t n = 2;
+    size_t k = 7;
+    size_t n = 5;
     BMat s1(m, k);
     BMat s2(k, n);
     s1.random();
     s2.random();
     std::cout << s1 << std::endl;
     std::cout << s2 << std::endl;
-    int res[m*n];
-    Halide::Buffer<int> res_buf(res, n, m, "res_buf");
+    float res[m*n];
+    Halide::Buffer<float> res_buf(res, n, m, "res_buf");
     matmul(&res_buf, s1, s2);
-    int* disp = res;
+    float* disp = res;
     
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {

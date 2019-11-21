@@ -123,7 +123,7 @@ namespace bdlearn {
         return os;
     }
 
-    void matmul(Halide::Buffer<int>* dest, const BMat& A, const BMat& B) {
+    void matmul(Halide::Buffer<float>* dest, const BMat& A, const BMat& B) {
         // Cols first then rows
         // A - m x k, B - k x n, C - m x n
         // C = A @ B
@@ -137,7 +137,7 @@ namespace bdlearn {
         Halide::RDom k(0, k_size);
         // Algo
         Halide::Expr xnor = ~( A_buf(k, y) ^ B_buf(x, k) );
-        Halide::Expr popcnt = Halide::cast<int>(Halide::popcount(xnor));
+        Halide::Expr popcnt = Halide::cast<float>(Halide::popcount(xnor));
         bmatmul(x, y) += 2 * popcnt - 15;
         // This proxy func will be used for optimizations later
         Halide::Func out;
