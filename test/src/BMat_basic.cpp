@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include "BMat_basic.hpp"
 
 using namespace bdlearn;
@@ -10,7 +11,7 @@ int test_BMat_copy_and_equals() {
     std::cout << orig << std::endl;
     if (!(orig == copy)) {
         std::cerr << "BMat_copy_and_equals failed!" << std::endl;
-        return 1;
+        return -1;
     }
     return 0; 
 }
@@ -49,11 +50,32 @@ int test_BMat_matmul_simple() {
                 sum += (t1 ? 1 : -1) * (t2 ? 1 : -1);
             }
             std::cout << i << j << sum << *disp << std::endl;
-            assert(*disp == sum);
+            if (*disp != sum) {
+                std::cerr << "test_BMat_matmul_simple failed at " << i << ", " << j;
+                std::cerr << ". Expected: " << sum << ", got: " << *disp << std::endl;
+                return -1;
+            }
             ++disp;
         }
     }
     return 0;
 }
 
+int test_BMat_sign_constructor() {
+    size_t m = 17;
+    size_t n = 7;
+    float rand[m*n];
+    for (size_t i = 0; i < m*n; ++i) rand[i] = std::rand();
+    BMat test(m, n, rand);
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            if (rand[i*n + j] >= 0 != test.get(i, j)) {
+                std::cerr << "test_BMat_sign_constructor failed at " << i << ", " << j;
+                std::cerr << ". Expected: " << (rand[i*n + j] >= 0) << ", got: " << test.get(i, j) << std::endl;
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
 

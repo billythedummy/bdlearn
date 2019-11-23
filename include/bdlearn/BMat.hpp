@@ -3,15 +3,18 @@
 
 #include <cstddef>
 #include <iostream>
-#include <memory>
 #include "Halide.h"
 
 namespace bdlearn {
     class BMat {
         public:
         // Constructors
-            // default - zero initialized
+            // default dummy
+            BMat();
+            // zero initialized
             BMat(size_t rows, size_t cols);
+            // from sign(src)
+            BMat(size_t rows, size_t cols, float* src);
             // copy
             BMat(const BMat& copy);
 
@@ -22,6 +25,7 @@ namespace bdlearn {
             void zeros();
             void ones();
             void random();
+            void sign(float *src);
             size_t rows() const;
             size_t cols() const;
             uint8_t get(int row, int col) const;
@@ -37,6 +41,7 @@ namespace bdlearn {
             size_t rows_;
             size_t cols_;
             size_t size_; // rows * cols
+
             BMat& operator=(const BMat& ref) = delete;
     };
 }

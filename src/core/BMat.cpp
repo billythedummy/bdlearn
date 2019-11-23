@@ -1,9 +1,6 @@
 #include <string.h>
 #include <iostream>
-#include <bitset>
-#include <ctime>
 #include "bdlearn/BMat.hpp"
-#include "libpopcnt.h"
 
 #define PRINT_UNITS 5
 
@@ -17,6 +14,20 @@ namespace bdlearn {
         size_ = rows * cols;
         data_.reset(new uint8_t[size_]);
         zeros();
+    }
+
+    BMat::BMat(size_t rows, size_t cols, float* src) {
+        rows_ = rows;
+        cols_ = cols;
+        size_ = rows * cols;
+        data_.reset(new uint8_t[size_]);
+        Halide::Buffer<uint8_t> data_view(data_.get(), size_);
+        Halide::Buffer<float> src_view(src, size_);
+        Halide::Var i;
+        // Algo
+        Halide::Func sign;
+        sign(i) = Halide::cast<uint8_t>(src_view(i) >= 0);
+        sign.realize(data_view);
     }
 
     BMat::BMat(const BMat& copy) {
@@ -71,6 +82,16 @@ namespace bdlearn {
         // Schedule
         // TO-DO: Optimize
         set.realize(view);
+    }
+
+    void BMat::sign(float *src) {
+        Halide::Buffer<uint8_t> data_view(data_.get(), size_);
+        Halide::Buffer<float> src_view(src, size_);
+        Halide::Var i;
+        // Algo
+        Halide::Func sign;
+        sign(i) = Halide::cast<uint8_t>(src_view(i) >= 0);
+        sign.realize(data_view);
     }
 
     size_t BMat::rows() const {
