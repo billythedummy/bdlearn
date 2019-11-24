@@ -41,7 +41,7 @@ int test_forward_t() {
     const int h_im2col = patch_area * in_c;
     const int w_im2col = out_height * out_width;
 
-    float out[(out_c * w_im2col];
+    float out[out_c * w_im2col];
     Halide::Buffer<float> out_buf(res, out_c, w_im2col, "out_buf");
     std::cout << 
         res_buf.dim(1).extent() << " " <<
