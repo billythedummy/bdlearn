@@ -48,7 +48,7 @@ namespace bdlearn {
         friend std::ostream& operator<<(std::ostream& os, const BConvLayer& l);
 
         template<typename T>
-        friend T* im2col(
+        T* im2col(
             Halide::Buffer<T>& src,
             size_t w_src, size_t h_src, size_t c_src,
             size_t p_x, size_t p_y,

@@ -11,7 +11,7 @@ namespace bdlearn {
 
     void BConvLayer::forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
         // TO-DO
-        
+        float* in_im2col = BConvLayer::im2col<float>(in, 3, 3, in_c_, 0, 0, s_, s_, k_, k_);
         return;
     }
 
