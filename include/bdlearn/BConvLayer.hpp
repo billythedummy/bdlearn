@@ -87,6 +87,12 @@ namespace bdlearn {
             out.realize(*dest);
             return dest;
         }
+        int get_cols() {
+            return w_.cols();
+        }
+        int get_rows() {
+            return w_.rows();
+        }
         private:
             std::unique_ptr<float[]> train_w_;
             // w_ is already in im2col format i.e. rows = out_c, cols = k*k*in_c
