@@ -38,6 +38,12 @@ int test_forward_t() {
 
     float out[((n - k) + 1) * ((m - k) + 1)];
     Halide::Buffer<float> out_buf(res, ((m - k) + 1), ((n - k) + 1), "out_buf");
+    printf("apple %d %d %d %d",
+        res_buf.dim(0).extent(),
+        res_buf.dim(1).extent(),
+        out_buf.dim(0).extent(),
+        out_buf.dim(1).extent()
+    )
     dut.forward_t(&out_buf, res_buf);
     delete res;
     return 0;
