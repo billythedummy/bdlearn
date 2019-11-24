@@ -34,10 +34,10 @@ int test_forward_t() {
     int m = 10; 
     int n = 12;
     float* res = new float[m*n*in_c];
-    Halide::Buffer<float> res_buf(res, n, m, "res_buf");
+    Halide::Buffer<float> res_buf(res, m, n, "res_buf");
 
     float out[((n - k) + 1) * ((m - k) + 1)];
-    Halide::Buffer<float> out_buf(res, ((n - k) + 1), ((m - k) + 1), "out_buf");
+    Halide::Buffer<float> out_buf(res, ((m - k) + 1), ((n - k) + 1), "out_buf");
     dut.forward_t(&out_buf, res_buf);
     delete res;
     return 0;
