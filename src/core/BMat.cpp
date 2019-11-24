@@ -156,8 +156,8 @@ namespace bdlearn {
         assert(A.cols_ == B.rows_);
         Halide::Func bmatmul("bmatmul");
         Halide::Var x, y;
-        Halide::Buffer<uint8_t> A_buf(A.data_.get(), A.cols_, A.rows_, "A_buf");
-        Halide::Buffer<uint8_t> B_buf(B.data_.get(), B.cols_, B.rows_, "B_buf");
+        Halide::Buffer<float> A_buf(A.data_.get(), A.cols_, A.rows_, "A_buf");
+        Halide::Buffer<float> B_buf(B.data_.get(), B.cols_, B.rows_, "B_buf");
         const int k_size = A.cols_;
         Halide::RDom k(0, k_size);
         // Algo
