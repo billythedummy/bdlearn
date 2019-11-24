@@ -55,7 +55,7 @@ namespace bdlearn {
             int s_x, int s_y,
             int k_x, int k_y
         ) {
-            T* dest = new T[w_src*h_src*c_src];
+            T* dest = (T*) calloc(w_src*h_src*c_src*sizeof(T));
             
             const int out_height = (h_src + 2*p_y - k_y) / s_y + 1;
             const int out_width = (w_src + 2*p_x - k_x) / s_x + 1;
