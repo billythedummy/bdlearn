@@ -31,8 +31,8 @@ int test_forward_t() {
     int out_c = 5;
     BConvLayer dut (k, 1, in_c, out_c);
 
-    int m = 100; 
-    int n = 120;
+    int m = 120; 
+    int n = 100;
     float* res = new float[m*n*in_c];
     Halide::Buffer<float> res_buf(res, m, n, "res_buf");
 
