@@ -65,15 +65,16 @@ namespace bdlearn {
 
             Halide::Func bim2col("bim2col");
             Halide::Var x, y;
-            int c = y / patch_area;
-            int pix_index_in_patch = x % patch_area;
-            int which_row = x / out_width;
-            int which_patch_in_row = x % out_width;
-            int top_left_y_index = which_row * s_y - p_y;
-            int top_left_x_index = which_patch_in_row * s_x - p_x;
-            int y_index = top_left_y_index + (pix_index_in_patch / k_x);
-            int x_index = top_left_x_index + (pix_index_in_patch % k_x);
-            bim2col(x, y) = src.get()[c*h_src*w_src+ y_index*w_src + x_index];
+            Halide::Expr c = y / patch_area;
+            Halide::Expr pix_index_in_patch = x % patch_area;
+            Halide::Expr which_row = x / out_width;
+            Halide::Expr which_patch_in_row = x % out_width;
+            Halide::Expr top_left_y_index = which_row * s_y - p_y;
+            Halide::Expr top_left_x_index = which_patch_in_row * s_x - p_x;
+            Halide::Expr y_index = top_left_y_index + (pix_index_in_patch / k_x);
+            Halide::Expr x_index = top_left_x_index + (pix_index_in_patch % k_x);
+            Halide::Expr index = c*h_src*w_src+ y_index*w_src + x_index;
+            bim2col(x, y) = src.get()[index];
             
             Halide::Func out;
             out(x, y) = bim2col(x, y);
