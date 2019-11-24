@@ -77,8 +77,9 @@ namespace bdlearn {
             y_index = Halide::min(y_index, h_src - 1);
             x_index = Halide::max(x_index, 0);
             x_index = Halide::min(x_index, w_src - 1);
+            Halide::print(x, y, src(x_index, y_index));
             bim2col(x, y) = src(x_index, y_index);
-            
+            Halide::print(x, y, );
             Halide::Func out;
             out(x, y) = bim2col(x, y);
             // Scheudle
