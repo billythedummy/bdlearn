@@ -35,9 +35,14 @@ int test_forward_t() {
     int n = 100;
     float* res = new float[m*n*in_c];
     Halide::Buffer<float> res_buf(res, m, n, "res_buf");
+    const int out_height = (m - k) / 1 + 1;
+    const int out_width = (n - k) / 1 + 1;
+    const int patch_area = k* k;
+    const int h_im2col = patch_area * in_c;
+    const int w_im2col = out_height * out_width;
 
-    float out[((n - k) + 1) * ((m - k) + 1)];
-    Halide::Buffer<float> out_buf(res, ((m - k) + 1), ((n - k) + 1), "out_buf");
+    float out[(out_c * w_im2col];
+    Halide::Buffer<float> out_buf(res, out_c, w_im2col, "out_buf");
     std::cout << 
         res_buf.dim(1).extent() << " " <<
         res_buf.dim(0).extent() << " " <<
