@@ -51,9 +51,9 @@ namespace bdlearn {
         T* im2col(
             Halide::Buffer<T>& src,
             int w_src, int h_src, int c_src,
-            size_t p_x, size_t p_y,
-            size_t s_x, size_t s_y,
-            size_t k_x, size_t k_y
+            int p_x, int p_y,
+            int s_x, int s_y,
+            int k_x, int k_y
         ) {
             T* dest = new T[w_src*h_src*c_src];
             
