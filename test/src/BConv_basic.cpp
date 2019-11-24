@@ -24,3 +24,19 @@ int test_BConv_rand_constructor() {
     }
     return 0;
 }
+
+int test_forward_t() {
+    size_t k = 13;
+    size_t in_c = 3;
+    size_t out_c = 5;
+    BConvLayer dut (k, 1, in_c, out_c);
+
+    size_t m = 3; 
+    size_t n = 5;
+    float res[m*n*in_c];
+    Halide::Buffer<float> res_buf(res, n, m, "res_buf");
+
+    float out[((n - k) + 1) * ((m - k) + 1)];
+    Halide::Buffer<float> out_buf(res, ((n - k) + 1), ((m - k) + 1), "out_buf");
+    dut.forward_t(&out_buf, res_buf);
+}

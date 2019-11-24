@@ -11,9 +11,12 @@ namespace bdlearn {
 
     void BConvLayer::forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
         // TO-DO
-        float* in_im2col = BConvLayer::im2col<float>(in, in.dim(0).extent(), in.dim(0).extent(), in_c_, 0, 0, s_, s_, k_, k_);
-        
+        int cols = in.dim(0).extent();
+        int rows = in.dim(1).extent();
+        float* in_im2col = BConvLayer::im2col<float>(in, rows, cols, in_c_, 0, 0, s_, s_, k_, k_);
+        BMat mat_in(rows, cols, in_im2col);
         delete in_im2col;
+        matmul(out, w_, mat_in);
         return;
     }
 
