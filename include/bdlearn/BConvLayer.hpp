@@ -50,13 +50,13 @@ namespace bdlearn {
         template<typename T>
         T* im2col(
             Halide::Buffer<T>& src,
-            size_t w_src, size_t h_src, size_t c_src,
+            int w_src, int h_src, int c_src,
             size_t p_x, size_t p_y,
             size_t s_x, size_t s_y,
             size_t k_x, size_t k_y
         ) {
             T* dest = new T[w_src*h_src*c_src];
-
+            
             const int out_height = (h_src + 2*p_y - k_y) / s_y + 1;
             const int out_width = (w_src + 2*p_x - k_x) / s_x + 1;
             const int patch_area = k_x * k_y;
