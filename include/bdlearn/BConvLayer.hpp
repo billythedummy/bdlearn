@@ -62,7 +62,8 @@ namespace bdlearn {
             const int patch_area = k_x * k_y;
             // const int h_im2col = patch_area * c_src;
             // const int w_im2col = out_height * out_width;
-
+            
+            printf("%d %d %d", out_height, out_width, patch_area);
             Halide::Func bim2col("bim2col");
             Halide::Var x, y;
             Halide::Expr c = y / patch_area;
