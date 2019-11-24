@@ -13,10 +13,10 @@ namespace bdlearn {
         // TO-DO
         int cols = in.dim(0).extent();
         int rows = in.dim(1).extent();
-        printf("%d %d", cols, rows);
         float* in_im2col = BConvLayer::im2col<float>(in, rows, cols, in_c_, 0, 0, s_, s_, k_, k_);
         BMat mat_in(rows, cols, in_im2col);
         delete in_im2col;
+        std::cout << "im2col" << mat_in.rows() << " " << mat_in.cols() << std::endl;
         matmul(out, w_, mat_in);
         return;
     }
