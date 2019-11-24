@@ -12,9 +12,9 @@ namespace bdlearn {
             // default dummy
             BMat();
             // zero initialized
-            BMat(size_t rows, size_t cols);
+            BMat(int rows, int cols);
             // from sign(src)
-            BMat(size_t rows, size_t cols, float* src);
+            BMat(int rows, int cols, float* src);
             // copy
             BMat(const BMat& copy);
 
@@ -26,8 +26,8 @@ namespace bdlearn {
             void ones();
             void random();
             void sign(float *src);
-            size_t rows() const;
-            size_t cols() const;
+            int rows() const;
+            int cols() const;
             uint8_t get(int row, int col) const;
 
         // friend operators
@@ -37,9 +37,9 @@ namespace bdlearn {
         friend void matmul(Halide::Buffer<float>* dest, const BMat& A, const BMat& B);
         private:
             std::unique_ptr<uint8_t[]> data_;
-            size_t rows_;
-            size_t cols_;
-            size_t size_; // rows * cols
+            int rows_;
+            int cols_;
+            int size_; // rows * cols
 
             BMat& operator=(const BMat& ref) = delete;
     };

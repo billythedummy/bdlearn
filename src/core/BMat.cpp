@@ -8,7 +8,7 @@ namespace bdlearn {
 
     // Constructors
 
-    BMat::BMat(size_t rows, size_t cols) {
+    BMat::BMat(int rows, int cols) {
         rows_ = rows;
         cols_ = cols;
         size_ = rows * cols;
@@ -16,7 +16,7 @@ namespace bdlearn {
         zeros();
     }
 
-    BMat::BMat(size_t rows, size_t cols, float* src) {
+    BMat::BMat(int rows, int cols, float* src) {
         rows_ = rows;
         cols_ = cols;
         size_ = rows * cols;
@@ -94,11 +94,11 @@ namespace bdlearn {
         sign.realize(data_view);
     }
 
-    size_t BMat::rows() const {
+    int BMat::rows() const {
         return rows_;
     }
 
-    size_t BMat::cols() const {
+    int BMat::cols() const {
         return cols_;
     }
 
@@ -112,7 +112,7 @@ namespace bdlearn {
         if (a.rows_ != b.rows_ || a.cols_ != b.cols_) {
             return false;
         }
-        for (size_t i = 0; i < a.size_; ++i) {
+        for (int i = 0; i < a.size_; ++i) {
             if (a.data_[i] != b.data_[i]) {
                 return false;
             }
@@ -122,22 +122,22 @@ namespace bdlearn {
 
     std::ostream& operator<<(std::ostream& os, const BMat& bmat) {
         os << std::hex;
-        for (size_t r = 0; r < bmat.rows_; ++r) {
-            size_t bot_margin = bmat.rows_ - PRINT_UNITS - 1;
+        for (int r = 0; r < bmat.rows_; ++r) {
+            int bot_margin = bmat.rows_ - PRINT_UNITS - 1;
             if (r > PRINT_UNITS - 1 && bmat.rows_ > 2*PRINT_UNITS && r < bot_margin) {
-                for (size_t i = 0; i < 3; ++i) {
+                for (int i = 0; i < 3; ++i) {
                     os << "   ." << std::endl;
                 }
                 r = bot_margin;
             } else {
-                for (size_t c = 0; c < bmat.cols_; ++c) {
-                    size_t right_margin = bmat.cols_ - PRINT_UNITS - 1;
+                for (int c = 0; c < bmat.cols_; ++c) {
+                    int right_margin = bmat.cols_ - PRINT_UNITS - 1;
                     if (c > PRINT_UNITS - 1 && bmat.cols_ > 2*PRINT_UNITS && c < right_margin) {
                         os << " . . . ";
                         c = right_margin;
                     } else {
-                        size_t row_bytes_traversed = r * bmat.cols_;
-                        size_t byte_index = row_bytes_traversed + c;
+                        int row_bytes_traversed = r * bmat.cols_;
+                        int byte_index = row_bytes_traversed + c;
                         os << " " << bmat.data_[byte_index] + 0 << " ";
                     }
                 }
