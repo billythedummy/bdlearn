@@ -73,6 +73,10 @@ namespace bdlearn {
             Halide::Expr top_left_x_index = which_patch_in_row * s_x - p_x;
             Halide::Expr y_index = top_left_y_index + (pix_index_in_patch / k_x);
             Halide::Expr x_index = top_left_x_index + (pix_index_in_patch % k_x);
+            y_index = Halide::max(y_index, 0);
+            y_index = Halide::min(y_index, h_src - 1);
+            x_index = Halide::max(x_index, 0);
+            x_index = Halide::min(x_index, w_src - 1);
             bim2col(x, y) = src(x_index, y_index);
             
             Halide::Func out;
