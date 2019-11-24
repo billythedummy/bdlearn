@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
     if (test_Halide_main()) return -1;
     if (test_BMat_sign_constructor()) return -1;
     if (test_BConv_rand_constructor()) return -1;
+    if (test_forward_t()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }

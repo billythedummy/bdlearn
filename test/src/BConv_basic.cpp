@@ -39,4 +39,5 @@ int test_forward_t() {
     float out[((n - k) + 1) * ((m - k) + 1)];
     Halide::Buffer<float> out_buf(res, ((n - k) + 1), ((m - k) + 1), "out_buf");
     dut.forward_t(&out_buf, res_buf);
+    return 0;
 }
