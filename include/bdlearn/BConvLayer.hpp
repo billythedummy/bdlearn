@@ -72,7 +72,7 @@ namespace bdlearn {
             const int top_left_x_index = which_patch_in_row * s_x - p_x;
             const int y_index = top_left_y_index + (pix_index_in_patch / k_x);
             const int x_index = top_left_x_index + (pix_index_in_patch % k_x);
-            bim2col(x, y) = src.get()[c*h_src*w_src+ y_index*w_src + x_index]
+            bim2col(x, y) = src.get()[c*h_src*w_src+ y_index*w_src + x_index];
             
             Halide::Func out;
             out(x, y) = bim2col(x, y);
