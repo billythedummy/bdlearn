@@ -11,6 +11,7 @@ namespace bdlearn {
 
     void BConvLayer::forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
         // TO-DO
+        
         return;
     }
 

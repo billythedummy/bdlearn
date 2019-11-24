@@ -48,14 +48,15 @@ namespace bdlearn {
         friend std::ostream& operator<<(std::ostream& os, const BConvLayer& l);
 
         template<typename T>
-        friend void im2col(
+        friend T* im2col(
             Halide::Buffer<T>& src,
             size_t w_src, size_t h_src, size_t c_src,
             size_t p_x, size_t p_y,
             size_t s_x, size_t s_y,
-            size_t k_x, size_t k_y,
-            Halide::Buffer<T>* dest
+            size_t k_x, size_t k_y
         ) {
+            T* dest = new T[w_src*h_src*c_src];
+
             const int out_height = (h_src + 2*p_y - k_y) / s_y + 1;
             const int out_width = (w_src + 2*p_x - k_x) / s_x + 1;
             const int patch_area = k_x * k_y;
@@ -79,6 +80,7 @@ namespace bdlearn {
             // Scheudle
             // TO-DO OPTIMIZE ALL THE FANCY STUFF
             out.realize(*dest);
+            return dest;
         }
         private:
             std::unique_ptr<float[]> train_w_;
