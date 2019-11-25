@@ -4,6 +4,7 @@ add_executable(bdlearn_test
     src/BMat_basic.cpp
     src/Halide_test.cpp
     src/BConv_basic.cpp
+    src/BatchNorm_basic.cpp
 )
 
 # link to main lib

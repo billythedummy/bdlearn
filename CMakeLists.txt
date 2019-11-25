@@ -5,6 +5,7 @@ project(bdlearn VERSION 0.0.0 LANGUAGES CXX)
 add_library(bdlearn
     src/core/BConvLayer.cpp
     src/core/BMat.cpp
+    src/core/BatchNorm.cpp
 )
 
 # dependencies
