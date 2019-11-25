@@ -21,6 +21,8 @@ namespace bdlearn {
             void forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) override; // training
             void forward_i(Halide::Buffer<float>* out, Halide::Buffer<float> in) override; // inference
             void backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) override;
+            void set_gamma(float* data);
+            void set_beta(float* data);
 
         private:
             int channels_;

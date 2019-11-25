@@ -48,17 +48,17 @@ namespace bdlearn {
         int rows = in.dim(1).extent();
         int cols = in.dim(0).extent();
         int m = rows*cols*batch_size;
-        Halide::RDom snb(0, rows, 0, cols, 0, batch_size); //space and batch
+        Halide::RDom snb(0, cols, 0, rows, 0, batch_size); //space and batch
         // mean algo
         Halide::Func mean;
-        Halide::Buffer<float> mu_view(mu_.get(), channels_);
+        Halide::Buffer<float> mu_view(mu_.get(), channels_, "mu_view");
         mean(c) = 0.0f;
         mean(c) += in(snb.x, snb.y, c, snb.z);
         mean(c) /= m;
         // mean schedule
         mean.realize(mu_view);
         // var algo
-        Halide::Buffer<float> var_view(var_.get(), channels_);
+        Halide::Buffer<float> var_view(var_.get(), channels_, "var_view");
         Halide::Func var;
         var(c) = 0.0f;
         Halide::Expr diff = in(snb.x, snb.y, c, snb.z) - mu_view(c);
@@ -69,10 +69,13 @@ namespace bdlearn {
         // output algo
         Halide::Var x, y, n;
         Halide::Func x_hat;
-        Halide::Expr var_plus_eps = var_view(c) + BDLEARN_EPS;
-        x_hat(x, y, c, n) = ( in(x, y, c, n) - mu_view(c) ) * Halide::fast_inverse_sqrt(var_plus_eps);
+        x_hat(x, y, c, n) = ( in(x, y, c, n) - mu_view(c) ) * Halide::fast_inverse_sqrt(var_view(c) + BDLEARN_EPS);
+        Halide::Func out_func;
+        Halide::Buffer<float> gamma_view(gamma_.get(), channels_, "gamma_view");
+        Halide::Buffer<float> beta_view(beta_.get(), channels_, "beta_view");
+        out_func(x, y, c, n) = x_hat(x, y, c, n) * gamma_view(c) + beta_view(c);
         // output schedule
-        x_hat.realize(*out);
+        out_func.realize(*out);
     }
 
     void BatchNorm::forward_i(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
@@ -87,5 +90,17 @@ namespace bdlearn {
     void BatchNorm::backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) {
         // TO-DO
         return;
+    }
+
+    void BatchNorm::set_gamma(float* data) {
+        for (int i = 0; i < channels_; ++i) {
+            gamma_.get()[i] = data[i];
+        }
+    }
+
+    void BatchNorm::set_beta(float* data) {
+        for (int i = 0; i < channels_; ++i) {
+            beta_.get()[i] = data[i];
+        }
     }
 }
