@@ -23,11 +23,17 @@ namespace bdlearn {
             void backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) override;
             void set_gamma(float* data);
             void set_beta(float* data);
+            void set_r_mean(float* data);
+            void set_r_var(float* data);
+            float* get_r_mean(void);
+            float* get_r_var(void);
 
         private:
             int channels_;
             std::unique_ptr<float[]> gamma_; // scale
             std::unique_ptr<float[]> beta_; // translation
+            std::unique_ptr<float[]> r_mean_; // running mean
+            std::unique_ptr<float[]> r_var_; // running variance
             std::unique_ptr<float[]> mu_; // mean from prev input
             std::unique_ptr<float[]> var_; // variance from prev input
     };

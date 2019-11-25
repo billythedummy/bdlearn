@@ -43,3 +43,5 @@ bn.weight = weight
 bn.bias = bias
 test_tensor = tensor(in_data, dtype=torch.float32).reshape((n, c, h, w))
 print(bn(test_tensor).flatten())
+print(bn.running_mean)
+print(bn.running_var)
