@@ -9,17 +9,17 @@ namespace bdlearn {
 
     // public functions
 
-    void BConvLayer::forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
+    void BConvLayer::forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         // TO-DO
         return;
     }
 
-    void BConvLayer::forward_i(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
+    void BConvLayer::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         // TO-DO
         return;
     }
 
-    void BConvLayer::backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) {
+    void BConvLayer::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
         // TO-DO
         return;
     }

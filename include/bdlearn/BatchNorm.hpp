@@ -18,9 +18,9 @@ namespace bdlearn {
             virtual ~BatchNorm();
 
         // public functions
-            void forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) override; // training
-            void forward_i(Halide::Buffer<float>* out, Halide::Buffer<float> in) override; // inference
-            void backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) override;
+            void forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // training
+            void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // inference
+            void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
             void set_gamma(float* data);
             void set_beta(float* data);
             void set_r_mean(float* data);

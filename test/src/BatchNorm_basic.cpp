@@ -21,7 +21,7 @@ int test_BatchNorm_forward_i() {
     Halide::Buffer<float> test_view(test, n, m, c);
     float out[c*m*n];
     Halide::Buffer<float> out_view(out, n, m, c);
-    dut.forward_i(&out_view, test_view);
+    dut.forward_i(out_view, test_view);
     for (int i = 0; i < c*m*n; ++i) {
         if (test[i] != out[i]) {
             std::cerr << "BatchNorm simple forward failed at " << i;
@@ -120,7 +120,7 @@ int test_BatchNorm_forward_t() {
     Halide::Buffer<float> in_view(in, w, h, c, n, "batchnorm_t_in");
     float out [n*c*h*w];
     Halide::Buffer<float> out_view(out, w, h, c, n, "batchnorm_t_out");
-    dut.forward_t(&out_view, in_view);
+    dut.forward_t(out_view, in_view);
     // verify data
     for (int i=0; i < n*c*h*w; ++i) {
         if (fabsf(out[i] - expected_out[i]) > 1E-3 ) {

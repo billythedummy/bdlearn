@@ -55,7 +55,7 @@ namespace bdlearn {
 
     // public functions
 
-    void BatchNorm::forward_t(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
+    void BatchNorm::forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         Halide::Var c;
         int batch_size = in.dim(3).extent();
         int rows = in.dim(1).extent();
@@ -88,7 +88,7 @@ namespace bdlearn {
         Halide::Buffer<float> beta_view(beta_.get(), channels_, "beta_view");
         out_func(x, y, c, n) = x_hat(x, y, c, n) * gamma_view(c) + beta_view(c);
         // output schedule
-        out_func.realize(*out);
+        out_func.realize(out);
         // update running mean algo
         Halide::Buffer<float> r_mean_view(r_mean_.get(), channels_, "r_mean_view");
         Halide::Func update_r_mean;
@@ -103,16 +103,16 @@ namespace bdlearn {
         update_r_var.realize(r_var_view);
     }
 
-    void BatchNorm::forward_i(Halide::Buffer<float>* out, Halide::Buffer<float> in) {
+    void BatchNorm::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         Halide::Var x, y, c;
         Halide::Func gam_x_pbeta;
         Halide::Buffer<float> gamma_view(gamma_.get(), channels_);
         Halide::Buffer<float> beta_view(beta_.get(), channels_);
         gam_x_pbeta(x, y, c) = in(x, y, c) * gamma_view(c) + beta_view(c);
-        gam_x_pbeta.realize(*out);
+        gam_x_pbeta.realize(out);
     }
 
-    void BatchNorm::backward(Halide::Buffer<float>* out, Halide::Buffer<float> ppg) {
+    void BatchNorm::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
         // TO-DO
         return;
     }
