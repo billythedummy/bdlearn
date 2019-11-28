@@ -97,6 +97,7 @@ namespace bdlearn {
             return w_.rows();
         }
         private:
+            // Halide dims for train_w_: k, k, in_c, out_c
             std::unique_ptr<float[]> train_w_;
             // w_ is already in im2col format i.e. rows = out_c, cols = k*k*in_c
             BMat w_;
@@ -108,6 +109,7 @@ namespace bdlearn {
             // training vars
             Halide::Buffer<float> prev_in; // previous input
             std::unique_ptr<float[]> prev_i2c_; // im2col of previous input
+            std::unique_ptr<float[]> dw; // dL/dw
     };
 }
 

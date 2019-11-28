@@ -53,8 +53,17 @@ namespace bdlearn {
     }
 
     void BConvLayer::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
-        // TO-DO
-        return;
+        // dl/dsign(w)
+        const int batches = ppg.dim(3).extent();
+        const int total_space = ppg.dim(0).extent()*ppg.dim(1).extent();
+        float* ppg_begin = ppg.get()->begin(); // this is super hacky i know
+        Halide::Buffer<float> ppg_re(ppg_begin, total_space,
+                                    ppg.dim(2).extent(), ppg.dim(3).extent());
+        // ppg_re's dimensions is now [batch, out_c, out_height*out_width] or (out_width*out_height, out_c, batch) in Halide dims
+        float dsignw [k_*k_*in_c_*out_c_*batches];
+        Halide::Buffer<float> dsignw_view(dsignw, k_*k_*in_c_, out_c_, batches);
+        Halide::Buffer<float> prev_i2c_view(prev_i2c_.get(), total_space, k_*k_*in_c_, batches);
+        BatchMatMul_BT(dsignw_view, ppg_re, prev_i2c_view);
     }
 
     void BConvLayer::load_weights(float* real_weights) {
