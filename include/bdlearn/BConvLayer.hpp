@@ -8,6 +8,8 @@
 #include "Halide.h"
 #include "bdlearn/BMat.hpp"
 #include "bdlearn/Layer.hpp"
+// for training
+#include "bdlearn/BatchBlas.hpp"
 
 namespace bdlearn {
     class BConvLayer: public Layer {
@@ -40,7 +42,7 @@ namespace bdlearn {
             void forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // training
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // inference
             void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
-            //void load_weights();
+            void load_weights(float* real_weights);
             uint8_t get_w(int x, int y, int in_c, int out_c);
             float get_train_w(int x, int y, int in_c, int out_c);
         
@@ -103,6 +105,9 @@ namespace bdlearn {
             int in_c_;
             int out_c_;
             int size_;
+            // training vars
+            Halide::Buffer<float> prev_in; // previous input
+            std::unique_ptr<float[]> prev_i2c_; // im2col of previous input
     };
 }
 
