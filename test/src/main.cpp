@@ -1,9 +1,11 @@
 #include <iostream>
 #include <bdlearn/bdlearn.hpp>
+
 #include "BMat_basic.hpp"
 #include "Halide_test.hpp"
 #include "BConv_basic.hpp"
 #include "BatchNorm_basic.hpp"
+#include "BatchBlas.hpp"
 
 using namespace bdlearn;
 
@@ -16,7 +18,9 @@ int main(int argc, char **argv) {
     if (test_BConv_rand_constructor()) return -1;
     if (test_BatchNorm_forward_i()) return -1;
     if (test_BatchNorm_forward_backward_t()) return -1;
-  */if (test_forward_t()) return -1;
+  */
+    //if (test_forward_t()) return -1;
+    if (test_BatchMM()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
