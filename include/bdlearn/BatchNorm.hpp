@@ -27,6 +27,8 @@ namespace bdlearn {
             void set_r_var(float* data);
             float* get_r_mean(void);
             float* get_r_var(void);
+            float* get_dgamma(void);
+            float* get_dbeta(void);
 
         private:
             int channels_;

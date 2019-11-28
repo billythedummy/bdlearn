@@ -222,4 +222,10 @@ namespace bdlearn {
     float* BatchNorm::get_r_var() {
         return r_var_.get();
     }
+    float* BatchNorm::get_dgamma() {
+        return dgamma_.get();
+    }
+    float* BatchNorm::get_dbeta() {
+        return dbeta_.get();
+    }
 }
