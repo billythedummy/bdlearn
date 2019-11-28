@@ -11,8 +11,8 @@ namespace bdlearn {
     class BatchNorm: public Layer {
         public:
         // Constructors
-            // default - gamma 1, beta 0
-            BatchNorm(int channels);
+            // default - gamma, rvar, 1, beta, rmean 0
+            BatchNorm(int channels, bool training=false);
 
         // Destructor
             virtual ~BatchNorm();
@@ -34,8 +34,13 @@ namespace bdlearn {
             std::unique_ptr<float[]> beta_; // translation
             std::unique_ptr<float[]> r_mean_; // running mean
             std::unique_ptr<float[]> r_var_; // running variance
+            // for storing gradients and other vars for backwards
             std::unique_ptr<float[]> mu_; // mean from prev input
             std::unique_ptr<float[]> var_; // variance from prev input
+            std::unique_ptr<float[]> x_hat_; // normalized x from previous input
+            std::unique_ptr<float[]> dbeta_; // dloss/dbeta
+            std::unique_ptr<float[]> dgamma_; //dloss/dgamma
+            Halide::Buffer<float> prev_in_; // previous input
     };
 }
 

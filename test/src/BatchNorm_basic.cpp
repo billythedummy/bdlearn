@@ -23,7 +23,7 @@ int test_BatchNorm_forward_i() {
     Halide::Buffer<float> out_view(out, n, m, c);
     dut.forward_i(out_view, test_view);
     for (int i = 0; i < c*m*n; ++i) {
-        if (test[i] != out[i]) {
+        if (fabsf(test[i] - out[i]) > 1E-3f) {
             std::cerr << "BatchNorm simple forward failed at " << i;
             std::cerr << " Expected: " << test[i] << ", got: " << out[i] << std::endl;
             return -1;
@@ -32,7 +32,7 @@ int test_BatchNorm_forward_i() {
     return 0;
 }
 
-int test_BatchNorm_forward_t() {
+int test_BatchNorm_forward_backward_t() {
     int n = 3;
     int c = 2;
     int h = 7;
@@ -114,7 +114,7 @@ int test_BatchNorm_forward_t() {
     float beta [c] = {0.12f, 0.3419f};
     float expected_r_mean [c] = {-0.0051f,  0.0001f};
     float expected_r_var [c] = {0.9916, 1.0018};
-    BatchNorm dut(c);
+    BatchNorm dut(c, true);
     dut.set_beta(beta);
     dut.set_gamma(gamma);
     Halide::Buffer<float> in_view(in, w, h, c, n, "batchnorm_t_in");
@@ -132,8 +132,8 @@ int test_BatchNorm_forward_t() {
     // verify running mean
     float* r_mean = dut.get_r_mean();
     for (int i=0; i < c; ++i) {
-        std::cout << r_mean[i] << ", " << expected_r_mean[i] << std::endl;
-        if (fabsf(r_mean[i] - expected_r_mean[i]) > 5E-3 ) {
+        //std::cout << r_mean[i] << ", " << expected_r_mean[i] << std::endl;
+        if (fabsf(r_mean[i] - expected_r_mean[i]) > 5E-3) {
             std::cerr << "test_BatchNorm_forward_t check r_mean failed at " << i;
             std::cerr << ". Expected: " << expected_r_mean[i] << ", got: " << r_mean[i] << std::endl;
             return -1;
@@ -142,12 +142,24 @@ int test_BatchNorm_forward_t() {
     // verify running var
     float* r_var = dut.get_r_var();
     for (int i=0; i < c; ++i) {
-        std::cout << r_var[i] << ", " << expected_r_var[i] << std::endl;
-        if (fabsf(r_var[i] - expected_r_var[i]) > 5E-3 ) {
+        //std::cout << r_var[i] << ", " << expected_r_var[i] << std::endl;
+        if (fabsf(r_var[i] - expected_r_var[i]) > 5E-3f) {
             std::cerr << "test_BatchNorm_forward_t check r_var failed at " << i;
             std::cerr << ". Expected: " << expected_r_var[i] << ", got: " << r_var[i] << std::endl;
             return -1;
         }
     }
+    float dldx [n*c*h*w];
+    Halide::Buffer<float> dldx_view(dldx, w, h, c, n);
+    float ppg [n*c*h*w];
+    for (int i = 0; i < n*c*h*w; ++i) {
+        ppg[i] = 1.0f;
+    }
+    Halide::Buffer<float> ppg_view(ppg, w, h, c, n);
+    dut.backward(dldx_view, ppg_view);
+    for (int i = 0; i < n*c*h*w; ++i) {
+        //std::cout << dldx[i] << ", ";
+    }
+    std::cout << std::endl;
     return 0;
 }
