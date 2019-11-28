@@ -170,7 +170,7 @@ int test_BatchNorm_forward_backward_t() {
     // verify data
     for (int i=0; i < n*c*h*w; ++i) {
         if (fabsf(out[i] - expected_out[i]) > 1E-3 ) {
-            std::cerr << "test_BatchNorm_forward_t failed at " << i;
+            std::cerr << "test_BatchNorm_forward_backward_t failed at " << i;
             std::cerr << ". Expected: " << expected_out[i] << ", got: " << out[i] << std::endl;
             return -1;
         }
@@ -180,7 +180,7 @@ int test_BatchNorm_forward_backward_t() {
     for (int i=0; i < c; ++i) {
         //std::cout << r_mean[i] << ", " << expected_r_mean[i] << std::endl;
         if (fabsf(r_mean[i] - expected_r_mean[i]) > 5E-3) {
-            std::cerr << "test_BatchNorm_forward_t check r_mean failed at " << i;
+            std::cerr << "test_BatchNorm_forward_backward_t check r_mean failed at " << i;
             std::cerr << ". Expected: " << expected_r_mean[i] << ", got: " << r_mean[i] << std::endl;
             return -1;
         }
@@ -190,7 +190,7 @@ int test_BatchNorm_forward_backward_t() {
     for (int i=0; i < c; ++i) {
         //std::cout << r_var[i] << ", " << expected_r_var[i] << std::endl;
         if (fabsf(r_var[i] - expected_r_var[i]) > 5E-3f) {
-            std::cerr << "test_BatchNorm_forward_t check r_var failed at " << i;
+            std::cerr << "test_BatchNorm_forward_backward_t check r_var failed at " << i;
             std::cerr << ". Expected: " << expected_r_var[i] << ", got: " << r_var[i] << std::endl;
             return -1;
         }
@@ -207,8 +207,8 @@ int test_BatchNorm_forward_backward_t() {
     // verify dgamma
     float* dgamma = dut.get_dgamma();
     for (int i=0; i < c; ++i) {
-        if (fabsf(dgamma[i] - expected_dldgamma[i]) > 1E-3f) {
-            std::cerr << "test_BatchNorm_forward_t check dgamma failed at " << i;
+        if (fabsf(dgamma[i] - expected_dldgamma[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dgamma failed at " << i;
             std::cerr << ". Expected: " << expected_dldgamma[i] << ", got: " << dgamma[i] << std::endl;
             return -1;
         }
@@ -216,16 +216,16 @@ int test_BatchNorm_forward_backward_t() {
     // verify dbeta
     float* dbeta = dut.get_dbeta();
     for (int i=0; i < c; ++i) {
-        if (fabsf(dbeta[i] - expected_dldbeta[i]) > 1E-3f) {
-            std::cerr << "test_BatchNorm_forward_t check dbeta failed at " << i;
+        if (fabsf(dbeta[i] - expected_dldbeta[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dbeta failed at " << i;
             std::cerr << ". Expected: " << expected_dldbeta[i] << ", got: " << dbeta[i] << std::endl;
             return -1;
         }
     }
     // verify dx
     for (int i=0; i < n*c*h*w; ++i) {
-        if (fabsf(dldx[i] - expected_dldx[i]) > 1E-3f) {
-            std::cerr << "test_BatchNorm_forward_t check dldx failed at " << i;
+        if (fabsf(dldx[i] - expected_dldx[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dldx failed at " << i;
             std::cerr << ". Expected: " << expected_dldx[i] << ", got: " << dldx[i] << std::endl;
             return -1;
         }
