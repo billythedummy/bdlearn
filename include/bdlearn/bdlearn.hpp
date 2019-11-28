@@ -6,7 +6,6 @@
 #include "bdlearn/BConvLayer.hpp"
 #include "bdlearn/Layer.hpp"
 #include "bdlearn/BatchNorm.hpp"
-
 // TRAINING
 #include "bdlearn/BatchBlas.hpp"
 

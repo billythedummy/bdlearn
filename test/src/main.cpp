@@ -5,7 +5,7 @@
 #include "Halide_test.hpp"
 #include "BConv_basic.hpp"
 #include "BatchNorm_basic.hpp"
-#include "BatchBlas.hpp"
+#include "BatchBlas_test.hpp"
 
 using namespace bdlearn;
 
