@@ -192,7 +192,7 @@ namespace bdlearn {
         Halide::Buffer<float> dmu_rhs_view(dmu_rhs, channels_);
         dmu_rhs_f(c) = 0.0f;
         dmu_rhs_f(c) += (dvar_view(c) / Halide::cast<float>(m)) * -2.0f * (prev_in_(snb.x, snb.y, c, snb.z) - mu_view(c));
-        dmu_rhs_f.realize(dmu_rhs_view); // HOW TO REALIZE OVER SAME DOMAIN I DONT WANNA ALLOCATE 2 ARRAYS MANG
+        dmu_rhs_f.realize(dmu_rhs_view); // HOW TO REALIZE 2 REDUCTIONS OVER SAME DOMAIN SIMULTANEOUSLY? I DONT WANNA ALLOCATE 2 ARRAYS MANG
         Halide::Func dmu_f;
         dmu_f(c) = dmu_view(c) + dmu_rhs_view(c);
         dmu_f.realize(dmu_view);
