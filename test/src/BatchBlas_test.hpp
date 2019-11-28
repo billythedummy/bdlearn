@@ -4,5 +4,7 @@
 #include <bdlearn/bdlearn.hpp>
 
 int test_BatchMM(void);
+int test_BatchMMBT(void);
+int test_BatchMMAT(void);
 
 #endif
