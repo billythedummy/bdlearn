@@ -47,6 +47,53 @@ namespace bdlearn {
         // friend operators
         friend std::ostream& operator<<(std::ostream& os, const BConvLayer& l);
 
+        template<typename T>
+        T* im2col(
+            Halide::Buffer<T>& src,
+            int w_src, int h_src, int c_src,
+            int p_x, int p_y,
+            int s_x, int s_y,
+            int k_x, int k_y
+        ) {
+            
+            const int out_height = (h_src + 2*p_y - k_y) / s_y + 1;
+            const int out_width = (w_src + 2*p_x - k_x) / s_x + 1;
+            const int patch_area = k_x * k_y;
+            const int h_im2col = patch_area * c_src;
+            const int w_im2col = out_height * out_width;
+
+            T* dest = (T*) calloc(h_im2col * w_im2col, sizeof(T));
+
+            printf("%d %d %d", out_height, out_width, patch_area);
+            Halide::Func bim2col("bim2col");
+            Halide::Var x, y;
+            Halide::Expr c = y / patch_area;
+            Halide::Expr pix_index_in_patch = x % patch_area;
+            Halide::Expr which_row = x / out_width;
+            Halide::Expr which_patch_in_row = x % out_width;
+            Halide::Expr top_left_y_index = which_row * s_y - p_y;
+            Halide::Expr top_left_x_index = which_patch_in_row * s_x - p_x;
+            Halide::Expr y_index = top_left_y_index + (pix_index_in_patch / k_x);
+            Halide::Expr x_index = top_left_x_index + (pix_index_in_patch % k_x);
+            y_index = Halide::max(y_index, 0);
+            y_index = Halide::min(y_index, h_src - 1);
+            x_index = Halide::max(x_index, 0);
+            x_index = Halide::min(x_index, w_src - 1);
+
+            bim2col(x, y) = print(src(x_index, y_index), x_index, y_index);
+            Halide::Func out;
+            out(x, y) = bim2col(x, y);
+            // Scheudle
+            // TO-DO OPTIMIZE ALL THE FANCY STUFF
+            out.realize(*dest);
+            return dest;
+        }
+        int get_cols() {
+            return w_.cols();
+        }
+        int get_rows() {
+            return w_.rows();
+        }
         private:
             std::unique_ptr<float[]> train_w_;
             // w_ is already in im2col format i.e. rows = out_c, cols = k*k*in_c
