@@ -9,6 +9,7 @@ add_library(bdlearn
     src/core/Model.cpp
 
     src/training/BatchBlas.cpp
+    src/training/SoftmaxCrossEntropy.cpp
 )
 
 # dependencies

@@ -7,6 +7,7 @@
 #include "BatchNorm_basic.hpp"
 #include "BatchBlas_test.hpp"
 #include "Model_test.hpp"
+#include "Softmax_test.hpp"
 
 using namespace bdlearn;
 
@@ -22,8 +23,9 @@ int main(int argc, char **argv) {
     //if (test_BatchMM()) return -1;
     //if (test_BatchMMBT()) return -1;
     //if (test_BatchMMATBr()) return -1;
-    if (test_BConv_forward_backward()) return -1;
-    if (test_Model()) return -1;
+    //if (test_BConv_forward_backward()) return -1;
+    //if (test_Model()) return -1;
+    if (test_softmax()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }

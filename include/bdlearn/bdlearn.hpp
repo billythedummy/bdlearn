@@ -10,4 +10,5 @@
 #include "bdlearn/BatchNorm.hpp"
 // TRAINING
 #include "bdlearn/BatchBlas.hpp"
+#include "bdlearn/SoftmaxCrossEntropy.hpp"
 #endif
