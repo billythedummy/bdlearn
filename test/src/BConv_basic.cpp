@@ -143,17 +143,17 @@ int test_BConv_forward_backward() {
     dut.backward(dx_view, ppg_view);
     for (int i = 0; i < out_c * in_c * k * k; ++i) {
         if (fabsf(dut.get_dw()[i] - expected_wgrad[i]) > 1E-3f) {
-            std::cerr << "conv_forward_backward failed at backward dw check " << i;
+            std::cerr << "conv_forward_backward failed at backward dw check, ind: " << i;
             std::cerr << ". Expected: " << expected_wgrad[i] << " got: " << dut.get_dw()[i] << std::endl;
             return -1;
         }
     } 
     for (int i = 0; i < batch * in_c * height * width; ++i) {
         if (fabsf(dx[i] - expected_dx[i]) > 1E-3f) {
-            std::cerr << "conv_forward_backward failed at backward dx check " << i;
+            std::cerr << "conv_forward_backward failed at backward dx check, ind: " << i;
             std::cerr << ". Expected: " << expected_dx[i] << " got: " << dx[i] << std::endl;
             return -1;
         }
-    } 
+    }
     return 0;
 }

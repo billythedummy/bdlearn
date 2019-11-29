@@ -13,6 +13,7 @@ namespace bdlearn {
     // public functions
 
     void BConvLayer::forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) {
+        prev_in_ = in;
         // calculate dims
         const int cols = in.dim(0).extent();
         const int rows = in.dim(1).extent();
@@ -55,15 +56,17 @@ namespace bdlearn {
     void BConvLayer::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
         // some constants for use
         const int batches = ppg.dim(3).extent();
-        const int total_space = ppg.dim(0).extent()*ppg.dim(1).extent();
+        const int out_width = ppg.dim(0).extent();
+        const int out_height = ppg.dim(1).extent();
+        const int total_space = out_width * out_height;
         float* ppg_begin = ppg.get()->begin();
         Halide::Buffer<float> ppg_re(ppg_begin, total_space,
-                                    ppg.dim(2).extent(), ppg.dim(3).extent());
-        Halide::Var x, y;
-        // ppg_re's dimensions is [batch, out_c, out_height*out_width] or (out_width*out_height, out_c, batch) in Halide dims
+                                    ppg.dim(2).extent(), batches);
+        // ppg_re's dimensions is (total_space, out_c, batch) in Halide dims
         const int kkic = k_ * k_ * in_c_;
         
         // dl/dsign(w) algo
+        Halide::Var x, y, c, n;
         float dsignw [kkic*out_c_*batches];
         Halide::Buffer<float> dsignwbatch_view(dsignw, kkic, out_c_, batches);
         Halide::Buffer<float> prev_i2c_view(prev_i2c_.get(), total_space, kkic, batches);
@@ -83,7 +86,18 @@ namespace bdlearn {
         // dl/dw schedule
         dw_ste_f.realize(dw_view);
 
-        
+        // dl/dsign(x) algo
+        float dcol [batches * kkic * total_space];
+        Halide::Buffer<float> dcol_view(dcol, total_space, kkic, batches, "dcol_view");
+        BatchMatMul_ATBr(dcol_view, w_view, ppg_re);
+        BatchCol2ImAccum(out, dcol_view, 0, s_, k_, out_width, out_height);
+
+        // dl/dx algo
+        Halide::Func dx_ste_f;
+        Halide::Expr x_ste_sel = Halide::select(Halide::abs(prev_in_(x, y, c, n)) < 1, prev_in_(x, y, c, n), 0);
+        dx_ste_f(x, y, c, n) = out(x, y, c, n) * x_ste_sel;
+        // dl/dx schedule
+        dx_ste_f.realize(out);
     }
 
     void BConvLayer::load_weights(float* real_weights) {

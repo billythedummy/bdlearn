@@ -136,4 +136,33 @@ namespace bdlearn {
         // Schedule
         im2col_f.realize(out);
     }
+
+    void BatchCol2ImAccum(Halide::Buffer<float> out, Halide::Buffer<float> in,
+                            const int p, const int s, const int k,
+                            const int out_width, const int out_height) {
+        // in Halide dims: n_patches (out_w*out_h), kkinc, batch
+        // out Halide dims: in_w, in_h, c_in, batch
+        assert(in.dim(0).extent() == out_width * out_height);
+        assert(in.dim(1).extent() == k*k*out.dim(2).extent());
+        assert(in.dim(2).extent() == out.dim(3).extent());
+        const int patch_area = k * k;
+        // Algo
+        Halide::Var x, y, c, n;
+        Halide::RDom nb(0, k, 0, k);
+        Halide::Func col2im_accum_f;
+        col2im_accum_f(x, y, c, n) = 0.0f;
+        Halide::Expr row_index = c * patch_area + nb.x + nb.y*k;
+        Halide::Expr top_left_y = y - nb.y;
+        Halide::Expr top_left_x = x - nb.x;
+        Halide::Expr which_patch_row = (top_left_y + p) / s;
+        Halide::Expr which_patch_in_row = (top_left_x + p) / s;
+        Halide::Expr which_patch = which_patch_row * out_width + which_patch_in_row; 
+        Halide::Expr invalid = ((top_left_y + p) % s != 0) || ((top_left_x + p) % s != 0)
+                                || which_patch_in_row < 0 || which_patch_in_row >= out_width
+                                || which_patch_row < 0 || which_patch_row >= out_height;
+        Halide::Expr which_patch_clamped = Halide::clamp(which_patch, 0, out_width * out_height - 1);
+        col2im_accum_f(x, y, c, n) += Halide::select(invalid, 0.0f, in(which_patch_clamped, row_index, n));
+        // Schedule
+        col2im_accum_f.realize(out);
+    }
 }

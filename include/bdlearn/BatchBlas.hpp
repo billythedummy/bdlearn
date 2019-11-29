@@ -11,7 +11,9 @@ namespace bdlearn {
     // A broadcasted
     void BatchMatMul_ABr(Halide::Buffer<float> out, Halide::Buffer<float> A, Halide::Buffer<float> B);
     void BatchIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
-                        const int p, const int s, int k, const int out_width, const int out_height);
+                        const int p, const int s, const int k, const int out_width, const int out_height);
+    void BatchCol2ImAccum(Halide::Buffer<float> out, Halide::Buffer<float> in,
+                            const int p, const int s, const int k, const int out_width, const int out_height);
 }
 
 #endif
