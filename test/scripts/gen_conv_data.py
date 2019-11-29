@@ -27,6 +27,56 @@ def im2col(data, p, s, k, out_width, out_height):
                     dtype=np.float32) # N x i2cH x i2cW
     return im2col_helper(res, data, p, s, k, out_width)
 
+def col2im_accum_helper(im, col, p, s, k, out_width, out_height):
+    # padding, stride, kernel size
+    # col is N x kkc x nPatches
+    # im is N x C x h x w, zeros
+    h = im.shape[2]
+    w = im.shape[3]
+    patch_area = k * k
+    patches_per_row = out_width
+    n_patch_rows = out_height
+    for n in range(im.shape[0]):
+        for c in range(im.shape[1]):
+            for i in range(h):
+                for j in range(w):
+                    # neighborhood index: 0 - top-left, k^2 - 1 - bot right
+                    for nb_index in range(patch_area):
+                        # row_index is function of input_channel and nb_index
+                        row_index = c * patch_area
+                        row_index += nb_index
+                        # col_index is which patch # this pixel belonged to
+                        top_left_i = i - (nb_index // k)
+                        top_left_j = j - (nb_index % k)
+                        # Determine row index and col index of patch based on
+                        # top left coordinate of patch
+                        which_patch_row = (top_left_i + p) // s
+                        invalid = (top_left_i + p) % s
+                        which_patch_in_row = (top_left_j + p) // s
+                        invalid |= (top_left_j + p) % s
+                        # Check if patch index is invalid
+                        invalid |= which_patch_in_row < 0 or which_patch_in_row >= patches_per_row
+                        invalid |= which_patch_row < 0 or which_patch_row >= n_patch_rows
+                        # Get final patch index
+                        which_patch = which_patch_row * patches_per_row + which_patch_in_row
+                        im[n, c, i, j] += 0 if invalid else col[n, row_index, which_patch]
+    return im
+
+def col2im_accum(col, in_h, in_w, out_h, out_w, outC, inC, p, s, k):
+    # kkc = kernel_size * kernel_size * COld
+    # col is N x kkc x nPatches
+    # returns N x COld x im_height x im_width
+    im = np.zeros(
+        (col.shape[0],
+        inC, #COld
+        in_h,
+        in_w),
+        dtype=np.float32
+    )
+    return col2im_accum_helper(im, col,
+                                    p, s, k,
+                                    out_w, out_h)
+
 def forward(data, W, p, s, k):
     # W should already be in im2col format
     # Save state vars for backwards
@@ -39,10 +89,30 @@ def forward(data, W, p, s, k):
     out_width = (data.shape[3] + 2*p - k) // s + 1
     col_in = im2col(data, p, s, k, out_width, out_height)
     #self.prev_cols = col_in
-    print(W.size - np.count_nonzero(np.sign(W)))
-    print(col_in.size - np.count_nonzero(col_in))
+    #print(W.size - np.count_nonzero(np.sign(W)))
+    #print(col_in.size - np.count_nonzero(col_in))
     col = np.sign(W) @ np.sign(col_in)
-    return col.reshape(col.shape[0], col.shape[1], out_height, out_width)
+    return col.reshape(col.shape[0], col.shape[1], out_height, out_width), np.sign(col_in)
+
+def backward(previous_partial_gradient, prev_cols, w, outC, inC, k,
+                in_h, in_w, out_h, out_w, p, s, x):
+    # w is outC, kkinC
+    previous_partial_gradient = previous_partial_gradient.reshape(previous_partial_gradient.shape[0],
+                                    previous_partial_gradient.shape[1], -1)
+    # Update our weight gradients
+    weight_grad_rows = previous_partial_gradient @ np.swapaxes(prev_cols, 1, 2)
+    weight_grad_rows = np.sum(weight_grad_rows, axis=0)
+    weight_grad = weight_grad_rows.reshape(outC, inC, k, k)
+    w_ste = w.copy().reshape(outC, inC, k, k)
+    w_ste[np.abs(w_ste) >= 1] = 0
+    weight_grad *= w_ste
+    # Pass the gradients on to layer behind
+    col = np.expand_dims(w.T, 0) @ previous_partial_gradient
+    dx = col2im_accum(col, in_h, in_w, out_h, out_w, outC, inC, p, s, k)
+    x_ste = x.copy()
+    x_ste[np.abs(x_ste) >= 1] = 0
+    dx *= x_ste
+    return weight_grad, dx
 
 if __name__ == "__main__":
     p = 0
@@ -53,6 +123,8 @@ if __name__ == "__main__":
     inC = 3
     outC = 4
     batch = 2
+    out_height = (height + 2*p - k) // s + 1
+    out_width = (width + 2*p - k) // s + 1
     IN = np.array(
         [-1.00865331, -0.29219059,  2.67323418,  1.8020211 ,  0.06334328,
        -0.93614211, -0.0566484 ,  0.10741072, -0.35934454, -2.38577151,
@@ -105,4 +177,10 @@ if __name__ == "__main__":
     ).astype(np.float32).reshape(outC, inC*k*k)
     #i2c = im2col(IN, p, s, k)
     #print(i2c)
-    print(list(forward(IN, W, p, s, k).flatten()))
+    out, col_in = forward(IN, W, p, s, k)
+    #print(list(out.flatten()))
+    ppg = np.arange(batch*outC*out_height*out_width).reshape(batch, outC, out_height, out_width).astype(np.float32)
+    weight_grad, dx = backward(ppg, col_in, W, outC, inC, k,
+                                height, width, out_height, out_width, p, s, IN)
+    print(list(dx.flatten()))
+    #print(list(weight_grad.flatten()))

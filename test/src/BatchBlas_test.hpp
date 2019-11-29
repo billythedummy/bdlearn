@@ -5,6 +5,6 @@
 
 int test_BatchMM(void);
 int test_BatchMMBT(void);
-int test_BatchMMAT(void);
+int test_BatchMMATBr(void);
 
 #endif

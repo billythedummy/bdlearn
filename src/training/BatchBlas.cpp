@@ -55,8 +55,8 @@ namespace bdlearn {
         out_f.realize(out);
     }
 
-    void BatchMatMul_AT(Halide::Buffer<float> out, Halide::Buffer<float> AT, Halide::Buffer<float> B) {
-        // AT Halide dims: cols, rows, batch
+    void BatchMatMul_ATBr(Halide::Buffer<float> out, Halide::Buffer<float> AT, Halide::Buffer<float> B) {
+        // AT Halide dims: cols, rows
         // B Halide dims: cols, rows, batch
         // C Halide dims: cols, row, batch
         // A - k rows m cols, BT - k rows n cols, C - m rows n cols
@@ -64,7 +64,6 @@ namespace bdlearn {
         assert(AT.dim(1).extent() == B.dim(1).extent());
         assert(AT.dim(0).extent() == out.dim(1).extent());
         assert(B.dim(0).extent() == out.dim(0).extent());
-        assert(AT.dim(2).extent() == out.dim(2).extent());
         assert(B.dim(2).extent() == out.dim(2).extent());
         // Algo
         int k_size = AT.dim(1).extent();
@@ -72,7 +71,7 @@ namespace bdlearn {
         Halide::RDom k(0, k_size);
         Halide::Func batch_matmul("batch_matmul_AT");
         batch_matmul(x, y, n) = 0.0f;
-        batch_matmul(x, y, n) += AT(y, k, n) * B(x, k, n);
+        batch_matmul(x, y, n) += AT(y, k) * B(x, k, n);
         Halide::Func out_f;
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule

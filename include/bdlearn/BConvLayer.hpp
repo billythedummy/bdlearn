@@ -17,7 +17,7 @@ namespace bdlearn {
         // Constructors
             // default - random initialized
             // k - kernel size, s - stride, in_c - in channels, out_c - out channels
-            BConvLayer(int k, int s, int in_c, int out_c) : w_(out_c, k*k*in_c) {
+            BConvLayer(int k, int s, int in_c, int out_c, bool train=false) : w_(out_c, k*k*in_c) {
                 k_ = k;
                 s_ = s;
                 in_c_ = in_c;
@@ -33,6 +33,10 @@ namespace bdlearn {
                 // init w_ by sign(train_w_)
                 w_.sign(w_real);
                 train_w_.reset(w_real);
+                if (train) {
+                    float* dw = new float[size_];
+                    dw_.reset(dw);
+                }
             } // VALID PADDING ONLY
 
         // Destructor
@@ -45,6 +49,7 @@ namespace bdlearn {
             void load_weights(float* real_weights);
             uint8_t get_w(int x, int y, int in_c, int out_c);
             float get_train_w(int x, int y, int in_c, int out_c);
+            float* get_dw();
         
         // friend operators
         friend std::ostream& operator<<(std::ostream& os, const BConvLayer& l);
@@ -107,9 +112,9 @@ namespace bdlearn {
             int out_c_;
             int size_;
             // training vars
-            Halide::Buffer<float> prev_in; // previous input
+            Halide::Buffer<float> prev_in_; // previous input
             std::unique_ptr<float[]> prev_i2c_; // im2col of previous input
-            std::unique_ptr<float[]> dw; // dL/dw
+            std::unique_ptr<float[]> dw_; // dL/dw
     };
 }
 
