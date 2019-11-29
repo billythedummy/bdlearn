@@ -6,6 +6,7 @@ add_executable(bdlearn_test
     src/BConv_basic.cpp
     src/BatchNorm_basic.cpp
     src/BatchBlas_test.cpp
+    src/Model_test.cpp
 )
 
 # link to main lib

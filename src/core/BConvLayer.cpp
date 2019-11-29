@@ -104,7 +104,7 @@ namespace bdlearn {
         if (!train_w_) {
             train_w_.reset(new float[size_]);
         }
-        for (int i = 0; i < size_; ++i) train_w_.get()[i] = real_weights[i];
+        for (int i = 0; i < size_; ++i) train_w_[i] = real_weights[i];
         w_.sign(train_w_.get());
     }
 
@@ -117,7 +117,7 @@ namespace bdlearn {
     }
 
     float BConvLayer::get_train_w(int x, int y, int in_c, int out_c) {
-        return train_w_.get()[out_c * k_ * k_ * in_c_
+        return train_w_[out_c * k_ * k_ * in_c_
                                 + in_c * k_ * k_
                                 + y * k_
                                 + x];

@@ -104,7 +104,7 @@ namespace bdlearn {
     }
 
     uint8_t BMat::get(int row, int col) const {
-        return data_.get()[row * cols_ + col];
+        return data_[row * cols_ + col];
     }
 
     // Friend operators

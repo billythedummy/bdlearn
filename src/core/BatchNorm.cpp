@@ -211,13 +211,13 @@ namespace bdlearn {
 
     void BatchNorm::set_gamma(float* data) {
         for (int i = 0; i < channels_; ++i) {
-            gamma_.get()[i] = data[i];
+            gamma_[i] = data[i];
         }
     }
 
     void BatchNorm::set_beta(float* data) {
         for (int i = 0; i < channels_; ++i) {
-            beta_.get()[i] = data[i];
+            beta_[i] = data[i];
         }
     }
 
