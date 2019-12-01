@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 def im2col_helper(col, data, p, s, k, out_width):
     patch_area = k * k
     for n in range(col.shape[0]):

@@ -100,6 +100,25 @@ namespace bdlearn {
         dx_ste_f.realize(out);
     }
 
+    bufdims BConvLayer::calc_out_dim(bufdims in_dims) {
+        assert(in_dims.c == in_c_);
+        return bufdims {
+            (in_dims.w - k_) / s_ + 1,
+            (in_dims.h - k_) / s_ + 1,
+            out_c_
+        };
+    }
+
+    void BConvLayer::update(float lr) {
+        // update w
+        Halide::Var n;
+        Halide::Func desc_w_f;
+        Halide::Buffer<float> dw_view(dw_.get(), size_);
+        Halide::Buffer<float> train_w_view(train_w_.get(), size_);
+        desc_w_f(n) -= lr * dw_view(n);
+        desc_w_f.realize(train_w_view);
+    }
+
     void BConvLayer::load_weights(float* real_weights) {
         if (!train_w_) {
             train_w_.reset(new float[size_]);

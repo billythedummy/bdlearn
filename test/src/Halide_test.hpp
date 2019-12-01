@@ -1,5 +1,5 @@
-#ifndef _HALIDE_TEST_H
-#define _HALIDE_TEST_H
+#ifndef _BDLEARN_HALIDE_TEST_H
+#define _BDLEARN_HALIDE_TEST_H
 
 #include "Halide.h"
 

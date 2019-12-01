@@ -209,6 +209,26 @@ namespace bdlearn {
         dx_f.realize(out);
     }
 
+    bufdims BatchNorm::calc_out_dim(bufdims in_dims) {
+        return in_dims;
+    }
+
+    void BatchNorm::update(float lr) {
+        // update gamma
+        Halide::Var c;
+        Halide::Func desc_gamma_f;
+        Halide::Buffer<float> dgamma_view(dgamma_.get(), channels_);
+        Halide::Buffer<float> gamma_view(gamma_.get(), channels_);
+        desc_gamma_f(c) -= lr * dgamma_view(c);
+        desc_gamma_f.realize(gamma_view);
+        // update beta
+        Halide::Func desc_beta_f;
+        Halide::Buffer<float> dbeta_view(dbeta_.get(), channels_);
+        Halide::Buffer<float> beta_view(beta_.get(), channels_);
+        desc_beta_f(c) -= lr * dbeta_view(c);
+        desc_beta_f.realize(beta_view);
+    }
+
     void BatchNorm::set_gamma(float* data) {
         for (int i = 0; i < channels_; ++i) {
             gamma_[i] = data[i];

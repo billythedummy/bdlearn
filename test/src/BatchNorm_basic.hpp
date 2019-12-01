@@ -1,5 +1,5 @@
-#ifndef _BATCHNORM_BASIC_TEST_H
-#define _BATCHNORM_BASIC_TEST_H
+#ifndef _BDLEARN_BATCHNORM_BASIC_TEST_H
+#define _BDLEARN_BATCHNORM_BASIC_TEST_H
 
 #include <bdlearn/bdlearn.hpp>
 

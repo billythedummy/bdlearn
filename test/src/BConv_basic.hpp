@@ -1,5 +1,5 @@
-#ifndef _BCONV_BASIC_TEST_H
-#define _BCONV_BASIC_TEST_H
+#ifndef _BDLEARN_BCONV_BASIC_TEST_H
+#define _BDLEARN_BCONV_BASIC_TEST_H
 
 #include <bdlearn/bdlearn.hpp>
 
