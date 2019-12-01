@@ -30,6 +30,19 @@ namespace bdlearn {
         return loss;
     }
 
+    void Model::forward_batch(float* out, Halide::Buffer<float> in) {
+        const int batch_size = in.dim(3).extent();
+        if (batch_size != batch_size_) {
+            batch_size_ = batch_size;
+            allocate_train_buffer(batch_size_);
+        }
+        forward_t(in);
+        bufdims last_layer_out_dims = layer_out_dims_.back();
+        const int n_floats = last_layer_out_dims.w * last_layer_out_dims.h * last_layer_out_dims.c * batch_size_;
+        const float* src_ptr = buf_t_.get() + buf_offsets_.back();
+        memcpy(out, src_ptr, sizeof(float) * n_floats);
+    }
+
     void Model::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
 
     }
@@ -39,8 +52,8 @@ namespace bdlearn {
         register_last_layer(new_layer);
     }
 
-    void Model::append_bconv(const int k, const int s, const int out_c) {
-        Layer* new_layer = new BConvLayer(k, s, out_dims_.c, out_c, training_);
+    void Model::append_bconv(const int k, const int out_c, const int s) {
+        Layer* new_layer = new BConvLayer(k, out_dims_.c, out_c, s, training_);
         register_last_layer(new_layer);
     }
 

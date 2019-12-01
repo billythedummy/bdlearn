@@ -17,12 +17,8 @@ namespace bdlearn {
         // Constructors
             // default - random initialized
             // k - kernel size, s - stride, in_c - in channels, out_c - out channels
-            BConvLayer(int k, int s, int in_c, int out_c, bool train=false) : w_(out_c, k*k*in_c) {
-                k_ = k;
-                s_ = s;
-                in_c_ = in_c;
-                out_c_ = out_c;
-                size_ = out_c * k * k * in_c;
+            BConvLayer(const int k, const int in_c, const int out_c, const int s=1, bool train=false)
+                : w_(out_c, k*k*in_c), k_(k), s_(s), in_c_(in_c), out_c_(out_c), size_(out_c * k * k * in_c) {
                 float* w_real = new float[size_];
                 float n = k * k * out_c;
                 // Random init train_w_

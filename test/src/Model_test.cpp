@@ -11,9 +11,9 @@ int test_Model() {
     // define model
     Model dut(in_w, in_h, in_c, true);
     dut.append_batch_norm();
-    dut.append_bconv(3, 1, 7);
+    dut.append_bconv(3, 7);
     dut.append_batch_norm();
-    dut.append_bconv(3, 1, classes);
+    dut.append_bconv(3, classes);
     dut.loss_softmax_cross_entropy();
     // make fake data
     float X [in_w*in_h*in_c*batch] = {
@@ -119,14 +119,35 @@ int test_Model() {
         0, 1, 0,
         0, 0, 1
     };
+    float output [classes*batch];
     // test full
     Halide::Buffer<float> X_view(X, in_w, in_h, in_c, batch);
     Halide::Buffer<float> Y_view(Y, classes, batch);
+
+    std::cout << "Initial prediction: " << std::endl;
+    dut.forward_batch(output, X_view);
+    for (int i = 0; i < batch; ++i) {
+        for (int j = 0; j < classes; ++j) {
+            std::cout << output[i*classes + j] << ", ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
     dut.set_lr(1E-5f);
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 10; ++i) {
         float loss = dut.train_step(X_view, Y_view);
         std::cout << "Loss: " << loss << std::endl;
     }
-    
+    std::cout << std::endl;
+
+    std::cout << "Final prediction: " << std::endl;
+    dut.forward_batch(output, X_view);
+    for (int i = 0; i < batch; ++i) {
+        for (int j = 0; j < classes; ++j) {
+            std::cout << output[i*classes + j] << ", ";
+        }
+        std::cout << std::endl;
+    }
     return 0;
 }

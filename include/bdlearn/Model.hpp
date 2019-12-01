@@ -24,8 +24,10 @@ namespace bdlearn {
         // public functions
             float train_step(Halide::Buffer<float> X, Halide::Buffer<float> Y);
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in); // inference
+            void forward_batch(float* out, Halide::Buffer<float> in);
+            // layers
             void append_batch_norm(void);
-            void append_bconv(const int k, const int s, const int out_c);
+            void append_bconv(const int k, const int out_c, const int s=1);
             void loss_softmax_cross_entropy(void);
             // getter setters
             void set_lr(float lr) {lr_ = lr;}
