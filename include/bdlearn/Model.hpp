@@ -12,9 +12,9 @@ namespace bdlearn {
     class Model {
         public:
         // constructor
-            Model(const int in_w, const int in_h, const int in_c, const bool training) 
-            : in_dims_{in_w, in_h, in_c},
-            out_dims_{in_w, in_h, in_c},
+            Model(const bufdims in_dims, const bool training) 
+            : in_dims_(in_dims),
+            out_dims_(in_dims),
             training_(training), batch_size_(0),
             lr_(1E-3f) {}
 
@@ -22,9 +22,10 @@ namespace bdlearn {
             virtual ~Model();
 
         // public functions
-            float train_step(Halide::Buffer<float> X, Halide::Buffer<float> Y);
+            float train_step(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* loss_args=nullptr);
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in); // inference
             void forward_batch(float* out, Halide::Buffer<float> in);
+            float eval(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* is_wrong_out);
             // layers
             void append_batch_norm(void);
             void append_bconv(const int k, const int out_c, const int s=1);

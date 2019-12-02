@@ -10,7 +10,7 @@ namespace bdlearn {
 
     // public functions
 
-    float Model::train_step(Halide::Buffer<float> X, Halide::Buffer<float> Y) {
+    float Model::train_step(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* loss_args) {
         const int batch_size = X.dim(3).extent();
         if (batch_size != batch_size_) {
             batch_size_ = batch_size;
@@ -23,7 +23,7 @@ namespace bdlearn {
                                             last_layer_out_dims.h,
                                             last_layer_out_dims.c,
                                             batch_size_);
-        float loss = loss_layer_ptr_->forward_t(last_layer_out, Y);
+        float loss = loss_layer_ptr_->forward_t(last_layer_out, Y, loss_args);
         loss_layer_ptr_->backward(last_layer_out);
         backward(last_layer_out);
         update();
@@ -45,6 +45,34 @@ namespace bdlearn {
 
     void Model::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
 
+    }
+
+    float Model::eval(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* is_wrong_out) {
+        // classification error is the only evaluation func for now
+        const int batch_size = X.dim(3).extent();
+        if (batch_size != batch_size_) {
+            batch_size_ = batch_size;
+            allocate_train_buffer(batch_size_);
+        }
+        forward_t(X);
+        bufdims last_layer_out_dims = layer_out_dims_.back();
+        float* last_layer_ptr = buf_t_.get() + buf_offsets_.back();
+        Halide::Buffer<float> last_layer_view(last_layer_ptr, last_layer_out_dims.c, batch_size, "last_layer_view");
+        float* out = static_cast<float*>(is_wrong_out);
+        Halide::Buffer<float> out_view(out, batch_size, "out_view");
+        Halide::Var b;
+        Halide::RDom c_r(0, last_layer_out_dims.c);
+        Halide::Func wrong_f;
+        Halide::Expr is_wrong = Halide::argmax(Y(c_r, b))[0] != Halide::argmax(last_layer_view(c_r, b))[0];
+        wrong_f(b) = Halide::select(is_wrong, 1.0f, 0.0f);
+        // argmax realize
+        wrong_f.realize(out_view);
+        // return error rate
+        float wrong = 0.0f;
+        for (int i = 0; i < batch_size; ++i) {
+            wrong += out[i];
+        }
+        return wrong / batch_size;
     }
 
     void Model::append_batch_norm() {

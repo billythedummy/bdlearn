@@ -9,7 +9,8 @@ int test_Model() {
     const int batch = 5;
     const int classes = 3;
     // define model
-    Model dut(in_w, in_h, in_c, true);
+    const bufdims in_dims {in_w, in_h, in_c};
+    Model dut(in_dims, true);
     dut.append_batch_norm();
     dut.append_bconv(3, 7);
     dut.append_batch_norm();
@@ -120,6 +121,7 @@ int test_Model() {
         0, 0, 1
     };
     float output [classes*batch];
+    float eval_out [batch];
     // test full
     Halide::Buffer<float> X_view(X, in_w, in_h, in_c, batch);
     Halide::Buffer<float> Y_view(Y, classes, batch);
@@ -135,7 +137,7 @@ int test_Model() {
     std::cout << std::endl;
 
     dut.set_lr(1E-5f);
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1; ++i) {
         float loss = dut.train_step(X_view, Y_view);
         std::cout << "Loss: " << loss << std::endl;
     }
@@ -149,5 +151,11 @@ int test_Model() {
         }
         std::cout << std::endl;
     }
+    dut.eval(X_view, Y_view, eval_out);
+    std::cout << "is wrong: ";
+    for (int i = 0; i < batch; ++i) {
+        std::cout << eval_out[i] << ", ";
+    }
+    std::cout << std::endl;
     return 0;
 }

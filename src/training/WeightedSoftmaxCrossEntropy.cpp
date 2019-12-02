@@ -1,13 +1,13 @@
-#include "bdlearn/SoftmaxCrossEntropy.hpp"
+#include "bdlearn/WeightedSoftmaxCrossEntropy.hpp"
 
 namespace bdlearn {
     // Destructor
-    SoftmaxCrossEntropy::~SoftmaxCrossEntropy() {
+    WeightedSoftmaxCrossEntropy::~WeightedSoftmaxCrossEntropy() {
         q_.reset();
     }
 
     // public functions
-    float SoftmaxCrossEntropy::forward_t(Halide::Buffer<float> in, Halide::Buffer<float> one_hot, void* args) {
+    float WeightedSoftmaxCrossEntropy::forward_t(Halide::Buffer<float> in, Halide::Buffer<float> one_hot, void* args) {
         // one_hot Halide dims: classes, batch
         // in Halide dims: width=1, height=1, classes, batch
         one_hot_ = one_hot;
@@ -57,15 +57,17 @@ namespace bdlearn {
         cross_entropy_f(b) = 0.0f;
         cross_entropy_f(b) += one_hot(cR, b) * -log_q_view(cR, b);
         cross_entropy_f.realize(cross_entropy_view);
-        // return mean of cross entropy as final loss
+        // return weighted mean of cross entropy as final loss
         float res = 0.0f;
+        float* weights = static_cast<float*>(args);
+        curr_batch_weights_ = weights;
         for (int i = 0; i < batch; ++i) {
-            res += cross_entropy[i];
+            res += cross_entropy[i] * weights[i];
         }
         return res / batch;
     }
 
-    void SoftmaxCrossEntropy::backward(Halide::Buffer<float> out_ppg) {
+    void WeightedSoftmaxCrossEntropy::backward(Halide::Buffer<float> out_ppg) {
         // out_ppg Halide dims: width=1, height=1, classes, batch
         const int classes = one_hot_.dim(0).extent();
         const int batch = one_hot_.dim(1).extent();
@@ -75,12 +77,13 @@ namespace bdlearn {
         assert(out_ppg.dim(1).extent() == 1);
         Halide::Var x, y, c, b;
         Halide::Buffer<float> q_view(q_.get(), classes, batch);
+        Halide::Buffer<float> w_view(curr_batch_weights_, batch);
         Halide::Func mean_grad_f;
-        mean_grad_f(x, y, c, b) = (q_view(c, b) - one_hot_(c, b)) / batch;
+        mean_grad_f(x, y, c, b) = w_view(b) * (q_view(c, b) - one_hot_(c, b)) / batch;
         mean_grad_f.realize(out_ppg);
     }
 
-    float* SoftmaxCrossEntropy::get_q() {
+    float* WeightedSoftmaxCrossEntropy::get_q() {
         return q_.get();
     }
 
