@@ -89,6 +89,10 @@ namespace bdlearn {
         loss_layer_ptr_.reset(new SoftmaxCrossEntropy());
     }
 
+    void Model::loss_weighted_softmax_cross_entropy() {
+        loss_layer_ptr_.reset(new WeightedSoftmaxCrossEntropy());
+    }
+
 
     // private functions
 

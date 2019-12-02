@@ -22,10 +22,13 @@ namespace bdlearn {
             void forward_batch(float* out, Halide::Buffer<float> in);
             void add_model(Model* model);
             // getter setters
-            void set_lr(const float lr) {lr_ = lr;}
+            void set_lr(const float lr) {for (auto& model_ptr: model_ptrs_) model_ptr->set_lr(lr);}
             void set_batch_size(const int batch_size) {batch_size_ = batch_size;}
             void set_dataset(float* X, float* Y, const int n, const bufdims in_dims, const bufdims out_dims);
-            
+            int get_n_models(void) {return model_ptrs_.size();}
+            // for debugging
+            float* get_w(void) {return w_.get();}
+            std::vector<float> get_alphas(void) {return alphas_;} // copies?
         
         // friend operators
         //friend std::ostream& operator<<(std::ostream& os, const Layer& l);
@@ -43,8 +46,8 @@ namespace bdlearn {
             bufdims in_dims_;
             bufdims out_dims_;
             // training params
-            std::unique_ptr<float[]> train_X_;
-            std::unique_ptr<float[]> train_Y_;
+            float* train_X_;
+            float* train_Y_;
             std::unique_ptr<float[]> w_; // weights for each training example
             std::unique_ptr<int[]> train_i_; // order of iteration for training this epoch
             int epoch_size_;

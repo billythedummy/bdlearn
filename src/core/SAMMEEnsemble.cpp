@@ -2,6 +2,11 @@
 
 namespace bdlearn {
 
+    // Destructor
+    SAMMEEnsemble::~SAMMEEnsemble() {
+        model_ptrs_.clear();
+    }
+
     // public functions
 
     float SAMMEEnsemble::train_step() {
@@ -27,13 +32,13 @@ namespace bdlearn {
             for (int j = 0; j < batch_size_; ++j) {
                 int curr_index = batch_offset + j;
                 int data_index = train_i_[curr_index];
-                memcpy(x_buffer + j*x_offset, train_X_.get()+data_index*x_offset,
+                memcpy(x_buffer + j*x_offset, train_X_+data_index*x_offset,
                         sizeof(float) * x_offset);
-                memcpy(y_buffer + j*y_offset, train_Y_.get()+data_index*y_offset,
+                memcpy(y_buffer + j*y_offset, train_Y_+data_index*y_offset,
                         sizeof(float) * y_offset);
             }
             Halide::Buffer<float> x_batch (x_buffer, in_dims_.w, in_dims_.h, in_dims_.c, batch_size_);
-            Halide::Buffer<float> y_batch (y_buffer, out_dims_.w, out_dims_.h, out_dims_.c, batch_size_);
+            Halide::Buffer<float> y_batch (y_buffer, out_dims_.c, batch_size_);
             curr->train_step(x_batch, y_batch, static_cast<void*>(w_shuffled + batch_offset)); //loss args
         }
         // in case of remainder for batch size
@@ -41,16 +46,15 @@ namespace bdlearn {
             for (int j = (epoch_size_ - rem); j < epoch_size_; ++j) {
                 int data_index = train_i_[j];
                 int j_zero_relative = j - epoch_size_ + rem;
-                memcpy(x_buffer + j_zero_relative*x_offset, train_X_.get()+data_index*x_offset,
+                memcpy(x_buffer + j_zero_relative*x_offset, train_X_+data_index*x_offset,
                         sizeof(float) * x_offset);
-                memcpy(y_buffer + j_zero_relative*y_offset, train_Y_.get()+data_index*y_offset,
+                memcpy(y_buffer + j_zero_relative*y_offset, train_Y_+data_index*y_offset,
                         sizeof(float) * y_offset);
             }
             Halide::Buffer<float> x_batch (x_buffer, in_dims_.w, in_dims_.h, in_dims_.c, rem);
-            Halide::Buffer<float> y_batch (y_buffer, out_dims_.w, out_dims_.h, out_dims_.c, rem);
+            Halide::Buffer<float> y_batch (y_buffer, out_dims_.c, rem);
             curr->train_step(x_batch, y_batch, static_cast<void*>(w_shuffled + epoch_size_ - rem)); //loss args  
         } 
-
         // evaluate model and update w_ and alphas_
         float is_wrong_shuffled [epoch_size_];
         for (int i = 0; i < steps_m1; ++i) {
@@ -58,13 +62,13 @@ namespace bdlearn {
             for (int j = 0; j < batch_size_; ++j) {
                 int curr_index = batch_offset + j;
                 int data_index = train_i_[curr_index];
-                memcpy(x_buffer + j*x_offset, train_X_.get()+data_index*x_offset,
+                memcpy(x_buffer + j*x_offset, train_X_+data_index*x_offset,
                         sizeof(float) * x_offset);
-                memcpy(y_buffer + j*y_offset, train_Y_.get()+data_index*y_offset,
+                memcpy(y_buffer + j*y_offset, train_Y_+data_index*y_offset,
                         sizeof(float) * y_offset);
             }
             Halide::Buffer<float> x_batch (x_buffer, in_dims_.w, in_dims_.h, in_dims_.c, batch_size_);
-            Halide::Buffer<float> y_batch (y_buffer, out_dims_.w, out_dims_.h, out_dims_.c, batch_size_);
+            Halide::Buffer<float> y_batch (y_buffer, out_dims_.c, batch_size_);
             curr->eval(x_batch, y_batch, static_cast<void*>(is_wrong_shuffled + batch_offset)); 
         }
         // in case of remainder for batch size
@@ -72,13 +76,13 @@ namespace bdlearn {
             for (int j = (epoch_size_ - rem); j < epoch_size_; ++j) {
                 int data_index = train_i_[j];
                 int j_zero_relative = j - epoch_size_ + rem;
-                memcpy(x_buffer + j_zero_relative*x_offset, train_X_.get()+data_index*x_offset,
+                memcpy(x_buffer + j_zero_relative*x_offset, train_X_+data_index*x_offset,
                         sizeof(float) * x_offset);
-                memcpy(y_buffer + j_zero_relative*y_offset, train_Y_.get()+data_index*y_offset,
+                memcpy(y_buffer + j_zero_relative*y_offset, train_Y_+data_index*y_offset,
                         sizeof(float) * y_offset);
             }
             Halide::Buffer<float> x_batch (x_buffer, in_dims_.w, in_dims_.h, in_dims_.c, rem);
-            Halide::Buffer<float> y_batch (y_buffer, out_dims_.w, out_dims_.h, out_dims_.c, rem);
+            Halide::Buffer<float> y_batch (y_buffer, out_dims_.c, rem);
             curr->eval(x_batch, y_batch, static_cast<void*>(is_wrong_shuffled + epoch_size_ - rem));
         }
 
@@ -106,8 +110,21 @@ namespace bdlearn {
             w_[i] /= total_w;
         }
         // increment current_m_i_
-        current_m_i_++;
+        current_m_i_ = (current_m_i_ + 1) % model_ptrs_.size();
         return err;
+    }
+
+    void SAMMEEnsemble::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
+        // TO-DO
+    }
+    
+    void SAMMEEnsemble::forward_batch(float* out, Halide::Buffer<float> in) {
+        // TO-DO?
+    }
+            
+    void SAMMEEnsemble::add_model(Model* model) {
+        model_ptrs_.push_back(std::unique_ptr<Model>(model));
+        alphas_.push_back(1.0f);
     }
 
     void SAMMEEnsemble::set_dataset(float* X, float* Y,
@@ -117,8 +134,8 @@ namespace bdlearn {
         out_dims_ = out_dims;
         epoch_size_ = n;
         // set data pointers
-        train_X_.reset(X);
-        train_Y_.reset(Y);
+        train_X_ = X;
+        train_Y_ = Y;
         // set train_i_
         int* train_i = new int[n];
         for (int i = 0; i < n; ++i) train_i[i] = i;

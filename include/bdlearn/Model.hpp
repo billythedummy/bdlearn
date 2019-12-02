@@ -5,6 +5,7 @@
 #include "bdlearn/Layer.hpp"
 #include "bdlearn/LossLayer.hpp"
 #include "bdlearn/SoftmaxCrossEntropy.hpp"
+#include "bdlearn/WeightedSoftmaxCrossEntropy.hpp"
 #include "bdlearn/BatchNorm.hpp"
 #include "bdlearn/BConvLayer.hpp"
 
@@ -30,6 +31,7 @@ namespace bdlearn {
             void append_batch_norm(void);
             void append_bconv(const int k, const int out_c, const int s=1);
             void loss_softmax_cross_entropy(void);
+            void loss_weighted_softmax_cross_entropy(void);
             // getter setters
             void set_lr(float lr) {lr_ = lr;}
             
