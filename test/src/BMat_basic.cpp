@@ -28,7 +28,8 @@ int test_BMat_matmul_simple() {
     std::cout << s2 << std::endl;
     float res[m*n];
     Halide::Buffer<float> res_buf(res, n, m, "res_buf");
-    matmul(&res_buf, s1, s2);
+    matmul(res_buf, s1, s2);
+    //std::cout << res_buf.dim(0).stride() << " " << res_buf.dim(1).stride() << std::endl;
     float* disp = res;
     
     /*

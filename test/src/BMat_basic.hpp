@@ -1,5 +1,5 @@
-#ifndef _BMAT_BASIC_TEST_H
-#define _BMAT_BASIC_TEST_H
+#ifndef _BDLEARN_BMAT_BASIC_TEST_H
+#define _BDLEARN_BMAT_BASIC_TEST_H
 
 #include <bdlearn/BMat.hpp>
 

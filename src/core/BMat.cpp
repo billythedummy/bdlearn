@@ -104,7 +104,7 @@ namespace bdlearn {
     }
 
     uint8_t BMat::get(int row, int col) const {
-        return data_.get()[row * cols_ + col];
+        return data_[row * cols_ + col];
     }
 
     // Friend operators
@@ -149,7 +149,7 @@ namespace bdlearn {
         return os;
     }
 
-    void matmul(Halide::Buffer<float>* dest, const BMat& A, const BMat& B) {
+    void matmul(Halide::Buffer<float> dest, const BMat& A, const BMat& B) {
         // Cols first then rows
         // A - m x k, B - k x n, C - m x n
         // C = A @ B
@@ -171,7 +171,7 @@ namespace bdlearn {
         out(x, y) = bmatmul(x, y);
         // Scheudle
         // TO-DO OPTIMIZE ALL THE FANCY STUFF
-        out.realize(*dest);
+        out.realize(dest);
         return;
     }
 }

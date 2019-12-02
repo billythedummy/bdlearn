@@ -21,9 +21,9 @@ int test_BatchNorm_forward_i() {
     Halide::Buffer<float> test_view(test, n, m, c);
     float out[c*m*n];
     Halide::Buffer<float> out_view(out, n, m, c);
-    dut.forward_i(&out_view, test_view);
+    dut.forward_i(out_view, test_view);
     for (int i = 0; i < c*m*n; ++i) {
-        if (test[i] != out[i]) {
+        if (fabsf(test[i] - out[i]) > 1E-3f) {
             std::cerr << "BatchNorm simple forward failed at " << i;
             std::cerr << " Expected: " << test[i] << ", got: " << out[i] << std::endl;
             return -1;
@@ -32,7 +32,7 @@ int test_BatchNorm_forward_i() {
     return 0;
 }
 
-int test_BatchNorm_forward_t() {
+int test_BatchNorm_forward_backward_t() {
     int n = 3;
     int c = 2;
     int h = 7;
@@ -114,17 +114,63 @@ int test_BatchNorm_forward_t() {
     float beta [c] = {0.12f, 0.3419f};
     float expected_r_mean [c] = {-0.0051f,  0.0001f};
     float expected_r_var [c] = {0.9916, 1.0018};
-    BatchNorm dut(c);
+    float expected_dldx [n*c*h*w] = {
+        -6.5492e-12,  5.0056e-11,  7.7320e-11,  3.1416e-11,  2.4971e-12,
+         4.8947e-11,  2.4936e-11, -7.6333e-11, -2.9930e-11, -5.0209e-11,
+        -3.4714e-11,  8.7796e-12,  5.2714e-12, -2.1883e-11, -1.1235e-10,
+        -2.9670e-11, -8.3970e-12, -1.1921e-11, -6.1536e-12,  7.7361e-11,
+        -3.3631e-11,  8.3996e-12,  5.7395e-11, -5.5315e-11,  4.5298e-11,
+         4.0494e-11, -9.1417e-11,  2.0814e-11,  6.9111e-11,  2.4020e-11,
+         7.5165e-11,  1.2583e-12,  4.0338e-11, -1.1005e-10,  3.6725e-11,
+        -1.3077e-10, -7.7138e-11,  1.2715e-10,  4.5200e-11,  6.7697e-11,
+         1.0701e-10,  5.5508e-11, -2.0296e-11, -6.5337e-11, -1.6895e-11,
+         9.7204e-11, -4.0195e-11,  4.7307e-11,  7.1939e-11,  2.1834e-11,
+         9.8215e-11,  7.1533e-11, -8.1248e-11, -5.1589e-11, -9.2038e-11,
+        -1.2331e-11,  2.4622e-10, -2.1124e-10,  5.7162e-11, -3.0935e-11,
+        -2.5871e-11, -8.1267e-12, -4.9643e-11, -1.1900e-10,  1.1320e-10,
+         4.7543e-11, -3.6897e-11, -3.2022e-11,  7.0456e-11,  1.3344e-10,
+         2.1631e-11,  7.8988e-13,  2.0553e-11, -3.7229e-12,  2.9251e-11,
+        -2.9436e-11,  8.5127e-11, -3.2400e-13,  7.4280e-11, -6.2483e-11,
+         6.4634e-12, -6.4684e-11,  3.3394e-11, -1.2405e-11, -1.0802e-11,
+         2.8757e-11,  5.3210e-11,  1.8201e-11, -5.6540e-12,  1.0519e-10,
+         3.7215e-11,  2.2625e-11, -3.6379e-11,  3.7985e-11,  9.4028e-11,
+         6.7472e-11,  8.9878e-12, -4.1861e-12, -6.8489e-11, -2.5225e-11,
+         1.7372e-12, -5.3889e-11,  5.9305e-11,  5.0424e-12, -1.1416e-11,
+        -2.0674e-11,  6.0648e-11, -1.1223e-10,  1.0242e-10, -5.6909e-11,
+         1.3894e-10,  5.5121e-11,  8.0405e-11, -1.0238e-10, -1.3143e-10,
+        -8.7598e-12,  5.4422e-11,  1.7800e-10, -6.4109e-11, -6.2852e-11,
+        -1.5183e-10,  5.6453e-11, -1.1821e-12,  5.7181e-11, -4.6553e-11,
+        -5.5917e-11, -1.3385e-10, -1.5654e-10,  8.6065e-11, -1.0689e-10,
+        -1.4665e-11,  1.2795e-10,  1.2820e-10, -9.6356e-11, -1.9783e-10,
+         1.9784e-11,  1.5051e-10,  3.4183e-11, -1.9684e-10, -5.9054e-11,
+        -9.1704e-11, -4.9577e-13,  2.4285e-11,  4.8635e-11, -6.9864e-12,
+        -6.4044e-11, -1.8771e-11, -8.3006e-11,  4.3888e-11,  3.9156e-11,
+        -6.5637e-11,  2.3104e-11,  1.1398e-11,  9.5225e-11, -5.9194e-12,
+        -1.0306e-10, -3.1856e-11,  3.4139e-11,  8.2383e-12, -5.3957e-11,
+        -3.7437e-12, -2.7192e-11,  3.7725e-11,  2.6825e-11, -1.1156e-11,
+        -5.4217e-11, -6.9416e-11, -3.6338e-11,  1.3079e-11,  4.9363e-11,
+        -1.2970e-10, -5.2057e-11,  2.5529e-11,  2.3291e-11, -8.3865e-11,
+        -1.0507e-10,  1.0882e-10, -7.4842e-12,  4.1770e-11, -2.6069e-11,
+         1.6267e-10, -1.5231e-10, -3.9099e-11, -1.0310e-10, -9.6356e-11,
+        -2.0787e-10,  1.0174e-10,  1.5741e-10, -3.7313e-11, -7.2452e-11,
+         1.4231e-10,  1.0456e-10,  3.2530e-11,  7.3489e-11,  7.6900e-11,
+         5.3468e-11, -4.5552e-11, -1.4722e-10, -3.9807e-11, -6.3457e-11,
+         3.7623e-11, -2.1591e-11, -2.8309e-11,  5.9618e-11,  7.8591e-11,
+         5.2457e-11, -9.5657e-11,  5.4308e-11,  4.4227e-11, -2.4246e-11
+    };
+    float expected_dldgamma [c] = {1.1016e-08, -1.3698e-08};
+    float expected_dldbeta [c] = {1.0f, 1.0f};
+    BatchNorm dut(c, true);
     dut.set_beta(beta);
     dut.set_gamma(gamma);
     Halide::Buffer<float> in_view(in, w, h, c, n, "batchnorm_t_in");
     float out [n*c*h*w];
     Halide::Buffer<float> out_view(out, w, h, c, n, "batchnorm_t_out");
-    dut.forward_t(&out_view, in_view);
+    dut.forward_t(out_view, in_view);
     // verify data
     for (int i=0; i < n*c*h*w; ++i) {
         if (fabsf(out[i] - expected_out[i]) > 1E-3 ) {
-            std::cerr << "test_BatchNorm_forward_t failed at " << i;
+            std::cerr << "test_BatchNorm_forward_backward_t failed at " << i;
             std::cerr << ". Expected: " << expected_out[i] << ", got: " << out[i] << std::endl;
             return -1;
         }
@@ -132,9 +178,9 @@ int test_BatchNorm_forward_t() {
     // verify running mean
     float* r_mean = dut.get_r_mean();
     for (int i=0; i < c; ++i) {
-        std::cout << r_mean[i] << ", " << expected_r_mean[i] << std::endl;
-        if (fabsf(r_mean[i] - expected_r_mean[i]) > 5E-3 ) {
-            std::cerr << "test_BatchNorm_forward_t check r_mean failed at " << i;
+        //std::cout << r_mean[i] << ", " << expected_r_mean[i] << std::endl;
+        if (fabsf(r_mean[i] - expected_r_mean[i]) > 5E-3) {
+            std::cerr << "test_BatchNorm_forward_backward_t check r_mean failed at " << i;
             std::cerr << ". Expected: " << expected_r_mean[i] << ", got: " << r_mean[i] << std::endl;
             return -1;
         }
@@ -142,10 +188,45 @@ int test_BatchNorm_forward_t() {
     // verify running var
     float* r_var = dut.get_r_var();
     for (int i=0; i < c; ++i) {
-        std::cout << r_var[i] << ", " << expected_r_var[i] << std::endl;
-        if (fabsf(r_var[i] - expected_r_var[i]) > 5E-3 ) {
-            std::cerr << "test_BatchNorm_forward_t check r_var failed at " << i;
+        //std::cout << r_var[i] << ", " << expected_r_var[i] << std::endl;
+        if (fabsf(r_var[i] - expected_r_var[i]) > 5E-3f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check r_var failed at " << i;
             std::cerr << ". Expected: " << expected_r_var[i] << ", got: " << r_var[i] << std::endl;
+            return -1;
+        }
+    }
+    // test backwards
+    float dldx [n*c*h*w];
+    Halide::Buffer<float> dldx_view(dldx, w, h, c, n);
+    float ppg [n*c*h*w];
+    for (int i = 0; i < n*c*h*w; ++i) {
+        ppg[i] = 2.0f / (n*c*h*w);
+    }
+    Halide::Buffer<float> ppg_view(ppg, w, h, c, n);
+    dut.backward(dldx_view, ppg_view);
+    // verify dgamma
+    float* dgamma = dut.get_dgamma();
+    for (int i=0; i < c; ++i) {
+        if (fabsf(dgamma[i] - expected_dldgamma[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dgamma failed at " << i;
+            std::cerr << ". Expected: " << expected_dldgamma[i] << ", got: " << dgamma[i] << std::endl;
+            return -1;
+        }
+    }
+    // verify dbeta
+    float* dbeta = dut.get_dbeta();
+    for (int i=0; i < c; ++i) {
+        if (fabsf(dbeta[i] - expected_dldbeta[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dbeta failed at " << i;
+            std::cerr << ". Expected: " << expected_dldbeta[i] << ", got: " << dbeta[i] << std::endl;
+            return -1;
+        }
+    }
+    // verify dx
+    for (int i=0; i < n*c*h*w; ++i) {
+        if (fabsf(dldx[i] - expected_dldx[i]) > 1E-4f) {
+            std::cerr << "test_BatchNorm_forward_backward_t check dldx failed at " << i;
+            std::cerr << ". Expected: " << expected_dldx[i] << ", got: " << dldx[i] << std::endl;
             return -1;
         }
     }
