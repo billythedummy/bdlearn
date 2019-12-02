@@ -158,7 +158,7 @@ namespace bdlearn {
                                 + x];
     }
 
-    // Helper im2col, uses 
+    // Helper im2col, same as BatchIm2Col without n
     void BConvIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
                         const int p, const int s, const int k,
                         const int out_width, const int out_height) {
@@ -169,7 +169,7 @@ namespace bdlearn {
         assert(out.dim(2).extent() == in.dim(3).extent());
         const int patch_area = k * k;
         // Algo
-        Halide::Var x, y, n; // i is y, j is x
+        Halide::Var x, y; // i is y, j is x
         Halide::Func im2col_f;
         Halide::Expr c = y / patch_area;
         Halide::Expr pix_index_in_patch = y % patch_area;
@@ -185,9 +185,8 @@ namespace bdlearn {
         Halide::Expr oob = y_index < 0 || y_index >= in.dim(1).extent() || x_index < 0 || x_index >= in.dim(0).extent();
         im2col_f(x, y, n) = Halide::select(oob, 0.0f, in(x_index, y_index, c, n));*/
         // no oob cos we're doing valid padding only
-        im2col_f(x, y, n) = in(x_index, y_index, c, n);
+        im2col_f(x, y) = in(x_index, y_index, c);
         // Schedule
-        im2col_f.parallel(n);
         im2col_f.realize(out);
     }
 }
