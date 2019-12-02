@@ -8,6 +8,7 @@ add_executable(bdlearn_test
     src/BatchBlas_test.cpp
     src/Model_test.cpp
     src/Softmax_test.cpp
+    src/Ensemble_test.cpp
 )
 
 # link to main lib
