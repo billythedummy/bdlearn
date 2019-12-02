@@ -51,7 +51,7 @@ namespace bdlearn {
         
         // friend operators
         friend std::ostream& operator<<(std::ostream& os, const BConvLayer& l);
-
+        /*
         template<typename T>
         T* im2col(
             Halide::Buffer<T>& src,
@@ -93,6 +93,8 @@ namespace bdlearn {
             out.realize(*dest);
             return dest;
         }
+        */
+
         int get_cols() {
             return w_.cols();
         }
@@ -114,6 +116,9 @@ namespace bdlearn {
             std::unique_ptr<float[]> prev_i2c_; // im2col of previous input
             std::unique_ptr<float[]> dw_; // dL/dw
     };
+
+    void BConvIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
+                        const int p, const int s, const int k, const int out_width, const int out_height);
 }
 
 #endif
