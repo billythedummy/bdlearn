@@ -14,6 +14,8 @@ int test_Model() {
     dut.append_batch_norm();
     dut.append_bconv(3, 7);
     dut.append_batch_norm();
+    dut.append_bconv(1, 16);
+    dut.append_batch_norm();
     dut.append_bconv(3, classes);
     dut.loss_softmax_cross_entropy();
     // make fake data
@@ -137,7 +139,7 @@ int test_Model() {
     std::cout << std::endl;
 
     dut.set_lr(1E-5f);
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 15; ++i) {
         float loss = dut.train_step(X_view, Y_view);
         std::cout << "Loss: " << loss << std::endl;
     }

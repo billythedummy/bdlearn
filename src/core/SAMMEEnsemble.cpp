@@ -97,6 +97,8 @@ namespace bdlearn {
         }
 
         // compute new alpha
+        //assert(err > 0);
+        //assert(err < 1);
         float alpha = logf((1-err) / err) + logf(out_dims_.c - 1);
         alphas_[current_m_i_] = alpha;
         // compute new weights
