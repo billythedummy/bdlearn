@@ -162,6 +162,7 @@ namespace bdlearn {
         std::string line, data;
         std::string::size_type sz;
         getline(fin, line);
+        std::cout << line << std::endl;
         std::istringstream s(line);
         for (int i = 0; i < size_; ++i) {
             std::getline(s, data, ',');
