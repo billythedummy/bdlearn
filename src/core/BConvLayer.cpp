@@ -68,8 +68,8 @@ namespace bdlearn {
         // Matmul weights with BMat
         std::cout << "in 0:" << in_im2col_view.dim(0).extent() << " 1:%d" << in_im2col_view.dim(1).extent() << std::endl;
         std::cout << "out 0:" << out.dim(0).extent() << " 1:%d" << out.dim(1).extent() << std::endl;
-        std::cout << "in_mat 0:" << in_mat.rows << " 1:%d" << in_mat.cols << std::endl;
-        std::cout << "w 0:" << w_.rows << " 1:%d" << w_.cols << std::endl;
+        std::cout << "in_mat 0:" << in_mat.rows() << " 1:%d" << in_mat.cols() << std::endl;
+        std::cout << "w 0:" << w_.rows() << " 1:%d" << w_.cols() << std::endl;
         matmul(out, w_, in_mat);
 
         prev_in_ = in;
