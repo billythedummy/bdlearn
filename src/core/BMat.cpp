@@ -169,7 +169,7 @@ namespace bdlearn {
         Halide::RDom k(0, k_size);
         // Algo
         bmatmul(x, y) = 0.0f;
-        Halide::Expr xnor = ~( A_buf(k, y) ^ B_buf(x, k) );
+        Halide::Expr xnor = ~( A_buf(y, k) ^ B_buf(k, x) );
         Halide::Expr popcnt = Halide::cast<float>(Halide::popcount(xnor));
         bmatmul(x, y) += 2 * popcnt - 15;
         // This proxy func will be used for optimizations later
