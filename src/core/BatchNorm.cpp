@@ -219,14 +219,28 @@ namespace bdlearn {
         Halide::Func desc_gamma_f;
         Halide::Buffer<float> dgamma_view(dgamma_.get(), channels_);
         Halide::Buffer<float> gamma_view(gamma_.get(), channels_);
-        desc_gamma_f(c) -= lr * dgamma_view(c);
+        desc_gamma_f(c) = gamma_view(c) - lr * dgamma_view(c);
         desc_gamma_f.realize(gamma_view);
         // update beta
         Halide::Func desc_beta_f;
         Halide::Buffer<float> dbeta_view(dbeta_.get(), channels_);
         Halide::Buffer<float> beta_view(beta_.get(), channels_);
-        desc_beta_f(c) -= lr * dbeta_view(c);
+        desc_beta_f(c) = beta_view(c) - lr * dbeta_view(c);
         desc_beta_f.realize(beta_view);
+
+        /*
+        std::cout << "gamma: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << gamma_[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "beta: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << beta_[i] << ", ";
+        }
+        std::cout << std::endl;
+        */
     }
 
     void BatchNorm::set_gamma(float* data) {

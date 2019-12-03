@@ -38,8 +38,8 @@ namespace bdlearn {
             Model& operator=(const Model& ref) = delete;
             // private functions
             void shuffle_train_i(void);
-            void batch_op_over_epoch(float (*op) (Halide::Buffer<float> x, Halide::Buffer<float> y, void* out),
-                                    void* args = nullptr);
+            /*void batch_op_over_epoch(float (*op) (Halide::Buffer<float> x, Halide::Buffer<float> y, void* out),
+                                    void* args = nullptr);*/
             // private fields
             std::vector< std::unique_ptr<Model> > model_ptrs_;
             std::vector<float> alphas_; // weights for each model

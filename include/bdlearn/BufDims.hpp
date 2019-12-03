@@ -2,11 +2,11 @@
 #define _BDLEARN_BUFDIMS_H_
 
 namespace bdlearn {
-    typedef struct {
+    struct bufdims {
         int w; //width
         int h; //height
         int c; //channels
-    } bufdims;
+    };
 }
 
 #endif

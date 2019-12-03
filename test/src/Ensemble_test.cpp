@@ -25,7 +25,8 @@ int test_Ensemble() {
         m->append_batch_norm();
         m->append_bconv(1, 16);
         m->append_batch_norm();
-        m->append_bconv(3, classes);
+        m->append_bconv(1, classes);
+        m->append_gap();
         m->loss_weighted_softmax_cross_entropy();
         dut.add_model(m);
     }

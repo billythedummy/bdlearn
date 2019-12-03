@@ -131,12 +131,22 @@ namespace bdlearn {
     }
 
     void BConvLayer::update(float lr) {
+        /*
+        std::cout << "W: " << std::endl;
+        for (int i = 0; i < out_c_; ++i) {
+            for (int j = 0; j < k_*k_*in_c_; ++j) {
+                std::cout << train_w_[i*k_*k_*in_c_ + j] << ", ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;*/
+
         // update w
         Halide::Var n;
         Halide::Func desc_w_f;
         Halide::Buffer<float> dw_view(dw_.get(), size_);
         Halide::Buffer<float> train_w_view(train_w_.get(), size_);
-        desc_w_f(n) -= lr * dw_view(n);
+        desc_w_f(n) = train_w_view(n) - lr * dw_view(n);
         desc_w_f.realize(train_w_view);
     }
 
