@@ -249,10 +249,10 @@ namespace bdlearn {
         save_arr(r_var_.get(), channels_, fout);
     }
     void BatchNorm::load_layer(std::ifstream& fin) {
-        load_arr(gamma_.get(), channels_, fout);
-        load_arr(beta_.get(), channels_, fout);
-        load_arr(r_mean_.get(), channels_, fout);
-        load_arr(r_var_.get(), channels_, fout);
+        load_arr(gamma_.get(), channels_, fin);
+        load_arr(beta_.get(), channels_, fin);
+        load_arr(r_mean_.get(), channels_, fin);
+        load_arr(r_var_.get(), channels_, fin);
     }
     void BatchNorm::set_gamma(float* data) {
         for (int i = 0; i < channels_; ++i) {
