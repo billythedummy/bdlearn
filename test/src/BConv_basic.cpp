@@ -245,6 +245,14 @@ int test_save_load_BConvLayer() {
     BConvLayer dut (k, in_c, out_c, 1, true);
     dut.load_weights(W);
 
+    float garb[k*k*in_c*out_c] = {
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    };
     std::ofstream fout;
     std::string path = "./test_weights/BConvLayerTest.csv";
     fout.open(path, std::ios::out | std::ios::trunc);
@@ -257,8 +265,15 @@ int test_save_load_BConvLayer() {
     std::cout << "End save" << std::endl;
     fout.close();
 
+    // Load a different set of weights
+    dut.load_weights(garb);
+    assert(dut.get_train_w(0, 0, 0, 0) == 1);
     std::ifstream fin;
     fin.open(path, std::ios::in);
+    if (fin.fail()) {
+        std::cerr << "File failed to open" << std::endl;
+        return -1;
+    }
     dut.load_layer(fin);
 
     for (int x = 0; x < k; ++x) {
