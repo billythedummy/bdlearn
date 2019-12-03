@@ -73,7 +73,7 @@ namespace bdlearn {
         std::cout << "w 0:" << w_.rows() << " 1:" << w_.cols() << std::endl;
 
         float* out_begin = out.get()->begin(); // this is super hacky i know
-        Halide::Buffer<float> out_view(out_begin, w_.rows(), in_mat.cols();
+        Halide::Buffer<float> out_view(out_begin, w_.rows(), in_mat.cols());
         matmul(out_view, w_, in_mat);
 
         prev_in_ = in;
