@@ -159,6 +159,12 @@ namespace bdlearn {
         Halide::Var x, y;
         Halide::Buffer<uint8_t> A_buf(A.data_.get(), A.cols_, A.rows_, "A_buf");
         Halide::Buffer<uint8_t> B_buf(B.data_.get(), B.cols_, B.rows_, "B_buf");
+        std::cout << 
+        A_buf.dim(0).extent() << " " <<
+        A_buf.dim(1).extent() << " " <<
+        B_buf.dim(0).extent() << " " <<
+        B_buf.dim(1).extent() << " " <<
+        std::endl;
         const int k_size = A.cols_;
         Halide::RDom k(0, k_size);
         // Algo
