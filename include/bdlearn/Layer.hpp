@@ -15,8 +15,6 @@ namespace bdlearn {
             virtual void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) = 0; // previous partial gradients
             virtual bufdims calc_out_dim(bufdims in_dims) = 0;
             virtual void update(float lr) = 0;
-            virtual void save_layer(std::fstream fout) = 0;
-            virtual void load_layer(std::fstream fin) = 0;
         // friend operators
         //friend std::ostream& operator<<(std::ostream& os, const Layer& l);
 

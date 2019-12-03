@@ -44,8 +44,8 @@ namespace bdlearn {
             void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
             bufdims calc_out_dim(bufdims in_dims) override;
             void update(float lr) override;
-            void save_layer(std::fstream fout) override;
-            void load_layer(std::fstream fin) override;
+            void save_layer(std::fstream fout);
+            void load_layer(std::fstream fin);
             void load_weights(float* real_weights);
             uint8_t get_w(int x, int y, int in_c, int out_c);
             float get_train_w(int x, int y, int in_c, int out_c);
