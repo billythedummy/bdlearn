@@ -232,3 +232,49 @@ int test_BatchNorm_forward_backward_t() {
     }
     return 0;
 }
+
+int test_save_load_BatchNorm() {
+    int c = 2;
+    float gamma [c] = {0.45f, 0.73f};
+    float beta [c] = {0.12f, 0.3419f};
+    float expected_r_mean [c] = {-0.0051f,  0.0001f};
+    float expected_r_var [c] = {0.9916, 1.0018};
+    float garb[c] = {1, 1};
+
+    BatchNorm dut(c, true);
+    dut.set_gamma(gamma);
+    dut.set_beta(beta);
+    dut.set_r_mean(expected_r_mean);
+    dut.set_r_var(expected_r_var);
+
+    std::string path = "./test_weights/BatchNormTest.csv";
+    
+    std::ofstream fout;
+    fout.open(path, std::ios::out | std::ios::trunc);
+    if (fout.fail()) {
+        std::cerr << "File failed to open" << std::endl;
+        return -1;
+    }
+    dut.save_layer(fout);
+    fout.close();
+
+    dut.set_gamma(garb);
+    dut.set_beta(garb);
+    dut.set_r_mean(garb);
+    dut.set_r_var(garb);
+
+    std::ifstream fin;
+    fin.open(path, std::ios::in);
+    if (fin.fail()) {
+        std::cerr << "File failed to open" << std::endl;
+        return -1;
+    }
+    dut.load_layer(fin);
+    fin.close();
+
+    for (int i = 0; i < c; ++i) {
+        assert(abs(dut.get_r_mean()[i] - expected_r_mean[i]) < 0.001);
+        assert(abs(dut.get_r_var()[i] - expected_r_var[i]) < 0.001);
+    }
+    return 0;
+}

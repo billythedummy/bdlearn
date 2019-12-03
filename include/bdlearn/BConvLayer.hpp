@@ -8,7 +8,7 @@
 #include "Halide.h"
 #include "bdlearn/BMat.hpp"
 #include "bdlearn/Layer.hpp"
-#include "bdlearn/utils.hpp"
+
 // for training
 #include "bdlearn/BatchBlas.hpp"
 
@@ -45,8 +45,8 @@ namespace bdlearn {
             void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
             bufdims calc_out_dim(bufdims in_dims) override;
             void update(float lr) override;
-            void save_layer(std::ofstream& fout);
-            void load_layer(std::ifstream& fin);
+            void save_layer(std::ofstream& fout) override;
+            void load_layer(std::ifstream& fin) override;
             void load_weights(float* real_weights);
             uint8_t get_w(int x, int y, int in_c, int out_c);
             float get_train_w(int x, int y, int in_c, int out_c);

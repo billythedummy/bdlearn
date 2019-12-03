@@ -266,6 +266,7 @@ int test_save_load_BConvLayer() {
     // Load a different set of weights
     dut.load_weights(garb);
     assert(dut.get_train_w(0, 0, 0, 0) == 1);
+
     std::ifstream fin;
     fin.open(path, std::ios::in);
     if (fin.fail()) {

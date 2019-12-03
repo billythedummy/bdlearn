@@ -5,5 +5,6 @@
 
 int test_BatchNorm_forward_i(void);
 int test_BatchNorm_forward_backward_t(void);
+int test_save_load_BatchNorm(void);
 
 #endif
