@@ -160,8 +160,6 @@ namespace bdlearn {
         }
         oss << "\n";
         fout << oss.rdbuf() << std::endl;
-        std::cout << "buf" << oss.rdbuf() << std::endl;
-        std::cout << "str" << oss.str() << std::endl;
     }
     void BConvLayer::load_layer(std::ifstream& fin) {
         std::string line, data;
