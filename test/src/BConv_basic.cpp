@@ -78,7 +78,7 @@ int test_forward_i() {
     Halide::Buffer<float> in_view(in, width, height, in_c);
     BConvLayer dut (k, 1, in_c, out_c, true);
     dut.load_weights(W);
-    dut.forward_t(out_view, in_view);
+    dut.forward_i(out_view, in_view);
     for (int i = 0; i < out_c * out_height * out_width; ++i) {
         if (fabsf(out[i] - expected_out[i]) > 1E-3f) {
             std::cerr << "conv_forward_backward failed at forward_t " << i;
