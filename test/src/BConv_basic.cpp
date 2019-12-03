@@ -246,7 +246,7 @@ int test_save_load_BConvLayer() {
     dut.load_weights(W);
 
     std::ofstream fout;
-    std::string path = "BConvLayerTest.csv";
+    std::string path = "/test_weights/BConvLayerTest.csv";
     fout.open(path, std::ios::out | std::ios::trunc);
     if (fout.fail()) {
         std::cerr << "File failed to open" << std::endl;
@@ -271,7 +271,7 @@ int test_save_load_BConvLayer() {
                         + y * k
                         + x];
                     float tw =  dut.get_train_w(x, y, i, o);
-                    if (w != tw) {
+                    if (abs(w - tw) > 0.0001) {
                         std::cerr << "test_save_load_BConvLayer failed at " << x << ", " << y << ", " << i << ", " << o;
                         std::cerr << ". Expected: " << w << ", got: " << tw << std::endl;
                         return -1;
