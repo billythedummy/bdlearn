@@ -177,7 +177,6 @@ if __name__ == "__main__":
     ).astype(np.float32).reshape(outC, inC*k*k)
     #i2c = im2col(IN, p, s, k)
     #print(i2c)
-    IN = IN[:width*height*inC*batch]
     out, col_in = forward(IN, W, p, s, k)
     print("out")
     print(list(out.flatten()))
@@ -185,6 +184,6 @@ if __name__ == "__main__":
     weight_grad, dx = backward(ppg, col_in, W, outC, inC, k,
                                 height, width, out_height, out_width, p, s, IN)
     #print("dx")
-    #print(list(dx.flatten()))
+    print(list(dx.flatten()))
     #print("weight_grad") 
-    #print(list(weight_grad.flatten()))
+    print(list(weight_grad.flatten()))
