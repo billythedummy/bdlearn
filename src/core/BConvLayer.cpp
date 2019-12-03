@@ -62,7 +62,7 @@ namespace bdlearn {
         // Put in into im2col
         float* in_im2col = new float[h_im2col * w_im2col];
         Halide::Buffer<float> in_im2col_view (in_im2col, w_im2col, h_im2col);
-        BatchIm2Col(in_im2col_view, in, 0, s_, k_, out_width, out_height);
+        BConvIm2Col(in_im2col_view, in, 0, s_, k_, out_width, out_height);
         // Make BMat with in_im2col
         BMat in_mat(out_height, out_width, in_im2col);
         // Matmul weights with BMat
