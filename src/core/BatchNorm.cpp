@@ -242,13 +242,13 @@ namespace bdlearn {
         std::cout << std::endl;
         */
     }
-    void save_layer(std::ofstream& fout) {
+    void BatchNorm::save_layer(std::ofstream& fout) {
         save_arr(gamma_.get(), channels_, fout);
         save_arr(beta_.get(), channels_, fout);
         save_arr(r_mean_.get(), channels_, fout);
         save_arr(r_var_.get(), channels_, fout);
     }
-    void load_layer(std::ifstream& fin) {
+    void BatchNorm::load_layer(std::ifstream& fin) {
         load_arr(gamma_.get(), channels_, fout);
         load_arr(beta_.get(), channels_, fout);
         load_arr(r_mean_.get(), channels_, fout);
