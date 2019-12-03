@@ -13,6 +13,8 @@ add_library(bdlearn
     src/training/BatchBlas.cpp
     src/training/SoftmaxCrossEntropy.cpp
     src/training/WeightedSoftmaxCrossEntropy.cpp
+    src/training/DataSet.cpp
+    src/training/darknet_image_loader.c
 )
 
 # dependencies

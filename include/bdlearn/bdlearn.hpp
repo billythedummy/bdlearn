@@ -17,4 +17,5 @@
 #include "bdlearn/BatchBlas.hpp"
 #include "bdlearn/SoftmaxCrossEntropy.hpp"
 #include "bdlearn/WeightedSoftmaxCrossEntropy.hpp"
+#include "bdlearn/DataSet.hpp"
 #endif
