@@ -153,21 +153,10 @@ namespace bdlearn {
         /*
          * Only save train_w, w_ can be implied from train_w
          */
-        std::ostringstream oss;
-        for (int i = 0; i < size_; ++i) {
-            fout << train_w_.get()[i] << ",";
-        }
-        fout << std::endl;
+        save_arr(train_w_.get(), size_, fout);
     }
     void BConvLayer::load_layer(std::ifstream& fin) {
-        std::string line, data;
-        std::string::size_type sz;
-        getline(fin, line);
-        std::istringstream s(line);
-        for (int i = 0; i < size_; ++i) {
-            std::getline(s, data, ',');
-            train_w_.get()[i] = std::stof(data, &sz);
-        }
+        load_arr(train_w_.get(), size_, fin);
         w_.sign(train_w_.get());
     }
 

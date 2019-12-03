@@ -8,6 +8,7 @@
 #include "Halide.h"
 #include "bdlearn/BMat.hpp"
 #include "bdlearn/Layer.hpp"
+#include "bdlearn/utils.hpp"
 // for training
 #include "bdlearn/BatchBlas.hpp"
 
