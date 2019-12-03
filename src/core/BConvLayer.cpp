@@ -67,6 +67,9 @@ namespace bdlearn {
         BMat in_mat(out_height, out_width, in_im2col);
         // Matmul weights with BMat
         matmul(out, w_, in_mat);
+
+        prev_in_ = in;
+        prev_i2c_.reset(in_im2col);
     }
 
     void BConvLayer::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
