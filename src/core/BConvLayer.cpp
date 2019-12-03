@@ -70,7 +70,10 @@ namespace bdlearn {
         std::cout << "out 0:" << out.dim(0).extent() << " 1:" << out.dim(1).extent() << " 2:" << out.dim(2).extent() << std::endl;
         std::cout << "in_mat 0:" << in_mat.rows() << " 1:" << in_mat.cols() << std::endl;
         std::cout << "w 0:" << w_.rows() << " 1:" << w_.cols() << std::endl;
-        matmul(out, w_, in_mat);
+
+        float* out_begin = out.get()->begin(); // this is super hacky i know
+        Halide::Buffer<float> out_view(out_begin, h_im2col*w_im2col, out_c_);
+        matmul(out_begin, w_, in_mat);
 
         prev_in_ = in;
         prev_i2c_.reset(in_im2col);
