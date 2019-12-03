@@ -158,7 +158,7 @@ namespace bdlearn {
             oss << train_w_.get()[i] << ",";
         }
         oss << "\n" << std::endl;
-        fout << oss.str() << std::endl;
+        fout << oss.rdbuf() << std::endl;
         std::cout << "buf" << oss.rdbuf() << std::endl;
         std::cout << "str" << oss.str() << std::endl;
     }

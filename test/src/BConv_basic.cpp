@@ -245,7 +245,7 @@ int test_save_load_BConvLayer() {
     BConvLayer dut (k, in_c, out_c, 1, true);
     dut.load_weights(W);
     std::ofstream fout;
-    fout.open("~/bdlearn/test/test_weights/BConvLayerTest.csv", std::ios::out | std::ios::app);
+    fout.open("~/bdlearn/test/test_weights/BConvLayerTest.csv", std::ios::out | std::ios::trunc);
     dut.save_layer(fout);
     fout.close();
 
