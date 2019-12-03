@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     //if (test_BConv_rand_constructor()) return -1;
     //if (test_BatchNorm_forward_i()) return -1;
     //if (test_BatchNorm_forward_backward_t()) return -1;
-    //if (test_forward_t()) return -1;
+    if (test_forward_i()) return -1;
     //if (test_BatchMM()) return -1;
     //if (test_BatchMMBT()) return -1;
     //if (test_BatchMMATBr()) return -1;
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     //if (test_Model()) return -1;
     //if (test_softmax()) return -1;
     //if (test_Ensemble()) return -1;
-    if (test_Model()) return -1;
+    //if (test_Model()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
