@@ -149,6 +149,25 @@ namespace bdlearn {
         desc_w_f(n) = train_w_view(n) - lr * dw_view(n);
         desc_w_f.realize(train_w_view);
     }
+    void BConvLayer::save_layer(std::fstream fout) {
+        /*
+         * Only save train_w, w_ can be implied from train_w
+         */
+        for (int i = 0; i < size_; ++i) {
+            fout << train_w_.get()[i] << ",";
+        }
+        fout << "\n";
+    }
+    void BConvLayer::load_layer(std::fstream fin) {
+        std::string line, data;
+        getline(fin, line);
+        std::istringstream s(line);
+        for (int i = 0; i < size_; ++i) {
+            std::getline(s, data, ',');
+            train_w_.get()[i] = std::stof(data);
+        }
+        w_.sign(train_w_.get());
+    }
 
     void BConvLayer::load_weights(float* real_weights) {
         if (!train_w_) {
