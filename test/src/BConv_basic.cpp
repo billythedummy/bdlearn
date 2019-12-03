@@ -266,9 +266,11 @@ int test_save_load_BConvLayer() {
                     if (w != tw) {
                         std::cerr << "test_save_load_BConvLayer failed at " << x << ", " y << ", " i << ", " o;
                         std::cerr << ". Expected: " << w << ", got: " << tw << std::endl;
+                        return -1;
                     }
                 }
             }
         }
     }
+    return 0;
 }
