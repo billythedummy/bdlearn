@@ -7,7 +7,7 @@ int test_BConv_rand_constructor() {
     int k = 13;
     int in_c = 3;
     int out_c = 5;
-    BConvLayer dut (k, 1, in_c, out_c, train=true);
+    BConvLayer dut (k, in_c, out_c, 1);
     for (int out_c_i = 0; out_c_i < out_c; ++out_c_i) {
         for (int in_c_i = 0; in_c_i < in_c; ++in_c_i) {
             for (int y = 0; y < k; ++y) {
