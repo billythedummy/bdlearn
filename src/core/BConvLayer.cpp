@@ -156,8 +156,9 @@ namespace bdlearn {
         std::ostringstream oss;
         for (int i = 0; i < size_; ++i) {
             oss << train_w_.get()[i] << ",";
+            fout << train_w_.get()[i] << ",";
         }
-        oss << "\n" << std::endl;
+        oss << "\n";
         fout << oss.rdbuf() << std::endl;
         std::cout << "buf" << oss.rdbuf() << std::endl;
         std::cout << "str" << oss.str() << std::endl;
