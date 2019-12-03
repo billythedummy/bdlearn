@@ -244,8 +244,10 @@ int test_save_load_BConvLayer() {
     Halide::Buffer<float> in_view(in, width, height, in_c);
     BConvLayer dut (k, in_c, out_c, 1, true);
     dut.load_weights(W);
+
     std::ofstream fout;
-    fout.open("~/bdlearn/test/test_weights/BConvLayerTest.csv", std::ios::out | std::ios::trunc);
+    std::string path = "BConvLayerTest.csv";
+    fout.open(path, std::ios::out | std::ios::trunc);
     if (fout.fail()) {
         std::cerr << "File failed to open" << std::endl;
         return -1;
@@ -256,7 +258,7 @@ int test_save_load_BConvLayer() {
     fout.close();
 
     std::ifstream fin;
-    fin.open("~/bdlearn/test/test_weights/BConvLayerTest.csv", std::ios::in);
+    fin.open(path, std::ios::in);
     dut.load_layer(fin);
 
     for (int x = 0; x < k; ++x) {
