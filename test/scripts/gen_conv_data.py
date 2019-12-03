@@ -123,8 +123,8 @@ if __name__ == "__main__":
     batch = 2
     out_height = (height + 2*p - k) // s + 1
     out_width = (width + 2*p - k) // s + 1
-    IN = np.array(
-        [-1.00865331, -0.29219059,  2.67323418,  1.8020211 ,  0.06334328,
+    IN = [
+        -1.00865331, -0.29219059,  2.67323418,  1.8020211 ,  0.06334328,
        -0.93614211, -0.0566484 ,  0.10741072, -0.35934454, -2.38577151,
        -1.12968527, -1.73120435, -0.99528351,  0.14717974,  1.10746035,
         0.12275506, -1.23225989, -0.91246136,  0.57759139,  0.14330837,
@@ -147,8 +147,10 @@ if __name__ == "__main__":
         0.14520752, -0.79650049, -1.3959103 , -1.21162863,  0.37943659,
        -1.84386534, -2.54894931,  0.00668073, -0.36955124,  1.77577916,
         0.46833654, -0.22232106, -1.01085293, -0.0624432 ,  1.02065703,
-       -1.22657194, -0.26174993,  0.0906495 ,  2.52473708,  1.67438017]
-    ).astype(np.float32).reshape(batch, inC, height, width)
+       -1.22657194, -0.26174993,  0.0906495 ,  2.52473708,  1.67438017
+    ]
+    # to allow for easy changing of batch size   
+    IN = np.array(IN[:width*height*inC*batch]).astype(np.float32).reshape(batch, inC, height, width)
     W = np.array(
         [-0.7299722 , -0.78967849,  0.84872669, -0.49856974, -1.09713458,
         1.47446225, -0.48514377, -0.12391957, -0.32268059,  0.34577184,
@@ -175,10 +177,14 @@ if __name__ == "__main__":
     ).astype(np.float32).reshape(outC, inC*k*k)
     #i2c = im2col(IN, p, s, k)
     #print(i2c)
+    IN = IN[:width*height*inC*batch]
     out, col_in = forward(IN, W, p, s, k)
-    #print(list(out.flatten()))
+    print("out")
+    print(list(out.flatten()))
     ppg = np.arange(batch*outC*out_height*out_width).reshape(batch, outC, out_height, out_width).astype(np.float32)
     weight_grad, dx = backward(ppg, col_in, W, outC, inC, k,
                                 height, width, out_height, out_width, p, s, IN)
-    print(list(dx.flatten()))
+    #print("dx")
+    #print(list(dx.flatten()))
+    #print("weight_grad") 
     #print(list(weight_grad.flatten()))
