@@ -23,6 +23,8 @@ namespace bdlearn {
             void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
             bufdims calc_out_dim(bufdims in_dims) override;
             void update(float lr) override;
+            void save_layer(std::ofstream& fout) {};
+            void load_layer(std::ifstream& fin) {};
     };
 }
 
