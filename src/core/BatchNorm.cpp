@@ -266,6 +266,18 @@ namespace bdlearn {
         }
     }
 
+    void BatchNorm::set_r_mean(float* data) {
+        for (int i = 0; i < channels_; ++i) {
+            r_mean_[i] = data[i];
+        }
+    }
+
+    void BatchNorm::set_r_var(float* data) {
+        for (int i = 0; i < channels_; ++i) {
+            r_var_[i] = data[i];
+        }
+    }
+
     float* BatchNorm::get_r_mean() {
         return r_mean_.get();
     }
