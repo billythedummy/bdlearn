@@ -149,7 +149,7 @@ namespace bdlearn {
         desc_w_f(n) = train_w_view(n) - lr * dw_view(n);
         desc_w_f.realize(train_w_view);
     }
-    void BConvLayer::save_layer(std::fstream& fout) {
+    void BConvLayer::save_layer(std::ofstream& fout) {
         /*
          * Only save train_w, w_ can be implied from train_w
          */
@@ -158,7 +158,7 @@ namespace bdlearn {
         }
         fout << "\n";
     }
-    void BConvLayer::load_layer(std::fstream& fin) {
+    void BConvLayer::load_layer(std::ifstream& fin) {
         std::string line, data;
         std::string::size_type sz;
         getline(fin, line);

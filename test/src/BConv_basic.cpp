@@ -244,12 +244,12 @@ int test_save_load_BConvLayer() {
     Halide::Buffer<float> in_view(in, width, height, in_c);
     BConvLayer dut (k, in_c, out_c, 1, true);
     dut.load_weights(W);
-    std::fstream fout;
+    std::ofstream fout;
     fout.open("../test_weights/BConvLayerTest.csv", std::ios::out | std::ios::app);
     dut.save_layer(fout);
     fout.close();
 
-    std::fstream fin;
+    std::ifstream fin;
     fin.open("../test_weights/BConvLayerTest.csv", std::ios::in);
     dut.load_layer(fin);
 
