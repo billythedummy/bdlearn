@@ -153,11 +153,14 @@ namespace bdlearn {
         /*
          * Only save train_w, w_ can be implied from train_w
          */
+        std::ostringstream oss;
         for (int i = 0; i < size_; ++i) {
-            fout << train_w_.get()[i] << ",";
+            oss << train_w_.get()[i] << ",";
             std::cout << train_w_.get()[i] << std::endl;
         }
-        fout << "\n";
+        oss << "\n" << std::endl;
+        std::cout << oss.str() << std::endl;
+
     }
     void BConvLayer::load_layer(std::ifstream& fin) {
         std::string line, data;
