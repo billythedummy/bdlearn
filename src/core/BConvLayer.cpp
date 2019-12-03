@@ -73,7 +73,7 @@ namespace bdlearn {
 
         float* out_begin = out.get()->begin(); // this is super hacky i know
         Halide::Buffer<float> out_view(out_begin, h_im2col*w_im2col, out_c_);
-        matmul(out_begin, w_, in_mat);
+        matmul(out_view, w_, in_mat);
 
         prev_in_ = in;
         prev_i2c_.reset(in_im2col);
