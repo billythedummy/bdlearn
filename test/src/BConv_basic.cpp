@@ -246,7 +246,7 @@ int test_save_load_BConvLayer() {
     dut.load_weights(W);
 
     std::ofstream fout;
-    std::string path = "/test_weights/BConvLayerTest.csv";
+    std::string path = "./test_weights/BConvLayerTest.csv";
     fout.open(path, std::ios::out | std::ios::trunc);
     if (fout.fail()) {
         std::cerr << "File failed to open" << std::endl;
