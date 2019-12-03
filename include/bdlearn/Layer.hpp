@@ -15,7 +15,7 @@ namespace bdlearn {
             virtual bufdims calc_out_dim(bufdims in_dims) = 0;
             virtual void update(float lr) = 0;
             virtual void save_layer(std::ofstream& fout) = 0;
-            virtual void load_layer(std::ofstream& fin) = 0;
+            virtual void load_layer(std::ifstream& fin) = 0;
         // friend operators
         //friend std::ostream& operator<<(std::ostream& os, const Layer& l);
 
