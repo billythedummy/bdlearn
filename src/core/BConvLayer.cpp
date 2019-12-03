@@ -168,7 +168,6 @@ namespace bdlearn {
         std::istringstream s(line);
         for (int i = 0; i < size_; ++i) {
             std::getline(s, data, ',');
-            std::cout << data << std::endl;
             train_w_.get()[i] = std::stof(data, &sz);
         }
         w_.sign(train_w_.get());
