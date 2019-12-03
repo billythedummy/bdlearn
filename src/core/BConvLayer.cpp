@@ -155,11 +155,9 @@ namespace bdlearn {
          */
         std::ostringstream oss;
         for (int i = 0; i < size_; ++i) {
-            oss << train_w_.get()[i] << ",";
             fout << train_w_.get()[i] << ",";
         }
-        oss << "\n";
-        fout << oss.rdbuf() << std::endl;
+        fout << std::endl;
     }
     void BConvLayer::load_layer(std::ifstream& fin) {
         std::string line, data;

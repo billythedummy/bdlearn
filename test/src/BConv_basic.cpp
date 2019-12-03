@@ -260,9 +260,7 @@ int test_save_load_BConvLayer() {
         std::cerr << "File failed to open" << std::endl;
         return -1;
     }
-    std::cout << "Start save" << std::endl;
     dut.save_layer(fout);
-    std::cout << "End save" << std::endl;
     fout.close();
 
     // Load a different set of weights

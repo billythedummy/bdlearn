@@ -5,7 +5,6 @@
 #include "bdlearn/BufDims.hpp"
 #include <fstream>
 #include <sstream>
-
 namespace bdlearn {
     class Layer {
         public:
