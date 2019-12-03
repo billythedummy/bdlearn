@@ -67,13 +67,13 @@ namespace bdlearn {
         BMat in_mat(h_im2col, w_im2col, in_im2col);
         // Matmul weights with BMat
         std::cout << "dim" << h_im2col << ", " << w_im2col << std::endl;
-        std::cout << "in 0:" << in_im2col_view.dim(0).extent() << " 1:" << in_im2col_view.dim(1).extent() << std::endl;
+        std::cout << "in2col 0:" << in_im2col_view.dim(0).extent() << " 1:" << in_im2col_view.dim(1).extent() << std::endl;
         std::cout << "out 0:" << out.dim(0).extent() << " 1:" << out.dim(1).extent() << " 2:" << out.dim(2).extent() << std::endl;
         std::cout << "in_mat 0:" << in_mat.rows() << " 1:" << in_mat.cols() << std::endl;
         std::cout << "w 0:" << w_.rows() << " 1:" << w_.cols() << std::endl;
 
         float* out_begin = out.get()->begin(); // this is super hacky i know
-        Halide::Buffer<float> out_view(out_begin, cols*rows, out_c_);
+        Halide::Buffer<float> out_view(out_begin, w_.cols(), rows);
         matmul(out_view, w_, in_mat);
 
         prev_in_ = in;
