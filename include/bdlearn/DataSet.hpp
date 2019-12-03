@@ -12,13 +12,14 @@ namespace bdlearn {
     class DataSet {
         public:
         // constructor
-            DataSet(){};
+            DataSet() : batch_size_(0), epoch_size_(0), steps_(0),
+                    curr_step_(0), x_size_(0), classes_(0){};
 
         // destructor
             ~DataSet(){};
 
         // public functions
-            void load_darknet_classification(char* images, char* label_file);
+            void load_darknet_classification(char const* images, char const* label_file);
             void shuffle(void);
             batchdata get_next_batch(void);
 
@@ -30,6 +31,7 @@ namespace bdlearn {
             int get_curr_step(void) {return curr_step_;}
             int* get_train_i(void) {return train_i_.get();}
             bufdims get_x_dims(void) {return x_dims_;}
+            int get_x_size(void) {return x_size_;}
 
         private:
             // delete assigment

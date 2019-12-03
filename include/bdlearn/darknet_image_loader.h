@@ -42,7 +42,7 @@ void list_insert(dn_list *l, void *val);
 
 char *fgetl(FILE *fp);
 
-dn_list *get_lines(char *filename);
+dn_list *get_lines(char const * filename);
 
 void **list_to_array(dn_list *l);
 

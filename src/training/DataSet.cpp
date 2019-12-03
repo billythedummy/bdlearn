@@ -1,4 +1,5 @@
 #include "bdlearn/DataSet.hpp"
+#include <iostream>
 
 namespace bdlearn {
     
@@ -6,7 +7,7 @@ namespace bdlearn {
     // for use under the 
     // DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
     // All credit to https://github.com/pjreddie
-    void DataSet::load_darknet_classification(char* images, char* label_file) {
+    void DataSet::load_darknet_classification(char const* images, char const* label_file) {
         dn_list *image_list = get_lines(images);
         dn_list *label_list = get_lines(label_file);
         int k = label_list->size;
@@ -90,8 +91,8 @@ namespace bdlearn {
 
     batchdata DataSet::get_next_batch_normal() {
         int batch_offset = curr_step_ * batch_size_;
-        float* x_buffer = new float[batch_size_];
-        float* y_buffer = new float[batch_size_];
+        float* x_buffer = new float[batch_size_ * x_size_];
+        float* y_buffer = new float[batch_size_ * classes_];
         for (int j = 0; j < batch_size_; ++j) {
             int curr_index = batch_offset + j;
             int data_index = train_i_[curr_index];
@@ -105,8 +106,8 @@ namespace bdlearn {
 
     batchdata DataSet::get_next_batch_rem() {
         const int rem = epoch_size_ % batch_size_;
-        float* x_buffer = new float[batch_size_];
-        float* y_buffer = new float[batch_size_];
+        float* x_buffer = new float[rem * x_size_];
+        float* y_buffer = new float[rem * classes_];
         for (int j = (epoch_size_ - rem); j < epoch_size_; ++j) {
             int j_zero_relative = j - epoch_size_ + rem;
             int data_index = train_i_[j];

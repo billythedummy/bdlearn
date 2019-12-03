@@ -14,7 +14,7 @@ add_library(bdlearn
     src/training/SoftmaxCrossEntropy.cpp
     src/training/WeightedSoftmaxCrossEntropy.cpp
     src/training/DataSet.cpp
-    src/training/darknet_image_loader.c
+    src/training/darknet_image_loader.cpp
 )
 
 # dependencies

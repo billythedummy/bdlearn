@@ -18,4 +18,5 @@
 #include "bdlearn/SoftmaxCrossEntropy.hpp"
 #include "bdlearn/WeightedSoftmaxCrossEntropy.hpp"
 #include "bdlearn/DataSet.hpp"
+#include "bdlearn/darknet_image_loader.h"
 #endif
