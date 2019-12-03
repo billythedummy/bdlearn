@@ -155,6 +155,7 @@ namespace bdlearn {
          */
         for (int i = 0; i < size_; ++i) {
             fout << train_w_.get()[i] << ",";
+            std::cout << train_w_.get()[i] << std::endl;
         }
         fout << "\n";
     }
