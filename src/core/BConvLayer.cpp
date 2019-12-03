@@ -160,11 +160,12 @@ namespace bdlearn {
     }
     void BConvLayer::load_layer(std::fstream& fin) {
         std::string line, data;
+        std::string::size_type sz;
         getline(fin, line);
         std::istringstream s(line);
         for (int i = 0; i < size_; ++i) {
             std::getline(s, data, ',');
-            train_w_.get()[i] = std::stof(data);
+            train_w_.get()[i] = std::stof(data, &sz);
         }
         w_.sign(train_w_.get());
     }
