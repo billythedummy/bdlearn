@@ -169,7 +169,6 @@ namespace bdlearn {
         // out Halide dims: n_patches, kkc, batch
         assert(out.dim(0).extent() == out_width * out_height);
         assert(out.dim(1).extent() == k*k*in.dim(2).extent());
-        assert(out.dim(2).extent() == in.dim(3).extent());
         const int patch_area = k * k;
         // Algo
         Halide::Var x, y; // i is y, j is x

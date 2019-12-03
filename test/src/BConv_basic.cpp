@@ -76,7 +76,7 @@ int test_forward_i() {
     };
     float expected_out[out_c * out_height * out_width] = {13.0, 5.0, -1.0, -7.0, 1.0, 5.0, 5.0, -3.0, -1.0, 5.0, -3.0, -3.0, -7.0, 1.0, -5.0, 5.0, 5.0, 5.0, 3.0, 11.0, 1.0, -1.0, -5.0, 3.0};
     Halide::Buffer<float> in_view(in, width, height, in_c);
-    BConvLayer dut (k, 1, in_c, out_c, true);
+    BConvLayer dut (k, in_c, out_c, 1, true);
     dut.load_weights(W);
     dut.forward_i(out_view, in_view);
     for (int i = 0; i < out_c * out_height * out_width; ++i) {
