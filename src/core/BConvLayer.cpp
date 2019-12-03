@@ -159,8 +159,8 @@ namespace bdlearn {
             std::cout << train_w_.get()[i] << std::endl;
         }
         oss << "\n" << std::endl;
-        fout << oss.rdbuf();
-        std::cout << oss.str() << std::endl;
+        fout << oss.str();
+        std::cout << oss.rdbuf() << std::endl;
 
     }
     void BConvLayer::load_layer(std::ifstream& fin) {
