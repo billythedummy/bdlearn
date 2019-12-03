@@ -264,7 +264,7 @@ int test_save_load_BConvLayer() {
                         + x];
                     float tw =  dut.get_train_w(x, y, i, o);
                     if (w != tw) {
-                        std::cerr << "test_save_load_BConvLayer failed at " << x << ", " y << ", " i << ", " o;
+                        std::cerr << "test_save_load_BConvLayer failed at " << x << ", " << y << ", " << i << ", " << o;
                         std::cerr << ". Expected: " << w << ", got: " << tw << std::endl;
                         return -1;
                     }
