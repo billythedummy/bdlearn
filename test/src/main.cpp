@@ -9,6 +9,7 @@
 #include "Model_test.hpp"
 #include "Softmax_test.hpp"
 #include "Ensemble_test.hpp"
+#include "GAP_test.hpp"
 
 using namespace bdlearn;
 
@@ -27,8 +28,9 @@ int main(int argc, char **argv) {
     //if (test_BConv_forward_backward()) return -1;
     //if (test_Model()) return -1;
     //if (test_softmax()) return -1;
+    if (test_GAP_forward_backward_t()) return -1;
     //if (test_Ensemble()) return -1;
-    if (test_Model()) return -1;
+    //if (test_Model()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }

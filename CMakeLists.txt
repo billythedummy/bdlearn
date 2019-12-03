@@ -6,6 +6,7 @@ add_library(bdlearn
     src/core/BConvLayer.cpp
     src/core/BMat.cpp
     src/core/BatchNorm.cpp
+    src/core/GAP.cpp
     src/core/Model.cpp
     src/core/SAMMEEnsemble.cpp
 

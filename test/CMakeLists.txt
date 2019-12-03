@@ -5,6 +5,7 @@ add_executable(bdlearn_test
     src/Halide_test.cpp
     src/BConv_basic.cpp
     src/BatchNorm_basic.cpp
+    src/GAP_test.cpp
     src/BatchBlas_test.cpp
     src/Model_test.cpp
     src/Softmax_test.cpp

@@ -22,7 +22,7 @@ namespace bdlearn {
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // inference
             void backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) override;
             bufdims calc_out_dim(bufdims in_dims) override;
-            virtual void update(float lr) override;
+            void update(float lr) override;
             void set_gamma(float* data);
             void set_beta(float* data);
             void set_r_mean(float* data);

@@ -110,6 +110,7 @@ namespace bdlearn {
     }
 
     void BConvLayer::update(float lr) {
+        /*
         std::cout << "W: " << std::endl;
         for (int i = 0; i < out_c_; ++i) {
             for (int j = 0; j < k_*k_*in_c_; ++j) {
@@ -117,7 +118,7 @@ namespace bdlearn {
             }
             std::cout << std::endl;
         }
-        std::cout << std::endl;
+        std::cout << std::endl;*/
 
         // update w
         Halide::Var n;
