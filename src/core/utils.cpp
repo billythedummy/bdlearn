@@ -27,6 +27,7 @@ namespace bdlearn {
             getline(fin1, line1);
             getline(fin2, line2);
             if (line1.compare(line2) != 0) {
+                std::cerr << temp << std::endl;
                 std::cerr << line1 << std::endl;
                 std::cerr << line2 << std::endl;
                 return -1;
