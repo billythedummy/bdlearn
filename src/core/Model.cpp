@@ -75,12 +75,12 @@ namespace bdlearn {
         return wrong / batch_size;
     }
     void Model::save_model(std::ofstream& fout) {
-        for (int i = 0; i < layer_ptrs_.size(); ++i) {
+        for (unsigned int i = 0; i < layer_ptrs_.size(); ++i) {
             layer_ptrs_[i]->save_layer(fout);
         }
     }
     void Model::load_model(std::ofstream& fin) {
-        for (int i = 0; i < layer_ptrs_.size(); ++i) {
+        for (unsigned int i = 0; i < layer_ptrs_.size(); ++i) {
             layer_ptrs_[i]->save_layer(fin);
         }
     }
