@@ -47,7 +47,6 @@ int test_MaxPool_forward_backward() {
         }
         std::cout << std::endl;
     }
-
     return 0;
 }
 
