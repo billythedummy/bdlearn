@@ -9,6 +9,7 @@
 #include "bdlearn/BatchNorm.hpp"
 #include "bdlearn/BConvLayer.hpp"
 #include "bdlearn/GAP.hpp"
+#include "bdlearn/MaxPool.hpp"
 
 namespace bdlearn {
     class Model {
@@ -32,6 +33,7 @@ namespace bdlearn {
             void append_batch_norm(void);
             void append_bconv(const int k, const int out_c, const int s=1);
             void append_gap(void);
+            void append_max_pool(const int k);
             void loss_softmax_cross_entropy(void);
             void loss_weighted_softmax_cross_entropy(void);
             // getter setters

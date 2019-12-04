@@ -13,6 +13,7 @@
 #include "bdlearn/BConvLayer.hpp"
 #include "bdlearn/BatchNorm.hpp"
 #include "bdlearn/GAP.hpp"
+#include "bdlearn/MaxPool.hpp"
 // training
 #include "bdlearn/BatchBlas.hpp"
 #include "bdlearn/SoftmaxCrossEntropy.hpp"

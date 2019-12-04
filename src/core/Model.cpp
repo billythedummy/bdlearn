@@ -86,6 +86,11 @@ namespace bdlearn {
         register_last_layer(new_layer);
     }
 
+    void Model::append_max_pool(const int k) {
+        Layer* new_layer = new MaxPool(k, k);
+        register_last_layer(new_layer);
+    }
+
     void Model::loss_softmax_cross_entropy() {
         loss_layer_ptr_.reset(new SoftmaxCrossEntropy());
     }

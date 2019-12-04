@@ -18,11 +18,13 @@ int test_MNIST(void) {
         Model* m = new Model(in_dims, true);
         m->append_batch_norm();
         m->append_bconv(5, 128); // 24
+        m->append_max_pool(2); // 12
         m->append_batch_norm();
-        m->append_bconv(3, 1024);
+        m->append_bconv(3, 512); // 10
+        m->append_max_pool(2); // 5
+        m->append_batch_norm();
+        m->append_bconv(3, classes); 
         m->append_gap();
-        m->append_batch_norm();
-        m->append_bconv(1, classes); 
         //m->loss_weighted_softmax_cross_entropy();
         m->loss_softmax_cross_entropy();
         /*
