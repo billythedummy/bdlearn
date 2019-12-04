@@ -12,7 +12,7 @@ namespace bdlearn {
     class MaxPool: public Layer {
         public:
             // Constructors
-            MaxPool(const int k = 2, const int s = 2): k_(k), s_(s), has_batches(false) {};
+            MaxPool(const int k = 2, const int s = 2): k_(k), s_(s) {};
 
             // public functions
             void forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) override; // training
@@ -24,13 +24,10 @@ namespace bdlearn {
         private:
             int k_; // kernel size
             int s_; // stride
-            bool has_batches;
             
             // training vars
-            Halide::Buffer<float> prev_in_; // previous input
             Halide::Buffer<int> max_x_;
             Halide::Buffer<int> max_y_;
-            Halide::Buffer<float> max_val_;
     };
 }
 

@@ -3,8 +3,7 @@
 
 #include <bdlearn/bdlearn.hpp>
 
-int test_MaxPool_forward_t(void);
-int test_MaxPool_backward(void);
+int test_MaxPool_forward_backward(void);
 int test_MaxPool(void);
 
 #endif
