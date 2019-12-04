@@ -24,8 +24,7 @@ namespace bdlearn {
         fin2.open(path2, std::ios::in);
         std::string line1, line2, temp;
         while (fin1 >> line1) {
-            fin2 >> temp;
-            getline(fin2, line2);
+            fin2 >> line2;
             if (line1.compare(line2) != 0) {
                 std::cerr << temp << std::endl;
                 std::cerr << line1 << std::endl;
