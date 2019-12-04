@@ -123,11 +123,37 @@ namespace bdlearn {
             Halide::Func wrong_f;
             Halide::Buffer<float> y_view(batch.y_ptr, classes, batch.size);
             Halide::Expr is_wrong = Halide::argmax(y_view(c_r, b))[0] != Halide::argmax(batch_max_view(c_r, b))[0];
+
+            /*
+            for (int i = 0; i < batch.size; ++i) {
+                for (int j = 0; j < classes; ++j) {
+                    std::cout << batch.y_ptr[i*classes + j] << ", ";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << std::endl;
+            for (int i = 0; i < batch.size; ++i) {
+                for (int j = 0; j < classes; ++j) {
+                    std::cout << batch_max[i*classes + j] << ", ";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << std::endl;
+            */
+
             wrong_f(b) = Halide::select(is_wrong, 1, 0);
             wrong_f.realize(batch_amax_view); // reusing amax_view here
             for (int i = 0; i < batch.size; ++i) {
                 total_errors += batch_amax[i];
             }
+
+            /*
+            for (int i = 0; i < batch.size; ++i) {
+                std::cout << batch_amax[i] << ", ";
+            }
+            std::cout << std::endl << std::endl;
+            */
+
             free_batch_data(batch);
         }
         return total_errors / dataset->get_epoch_size();

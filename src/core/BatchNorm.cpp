@@ -99,11 +99,11 @@ namespace bdlearn {
         Halide::Buffer<float> x_hat_view(x_hat_.get(), cols, rows, channels_, batch_size);
         x_hat(x, y, c, n) = ( in(x, y, c, n) - mu_view(c) ) * Halide::fast_inverse_sqrt(var_view(c) + BDLEARN_EPS);
         // x_hat schedule
-        /*
+        
         Halide::Var xy;
         Halide::Expr vec_xy = rows * cols > 32 ? 32 : rows*cols;
         x_hat.fuse(x, y, xy);
-        x_hat.vectorize(xy, vec_xy);*/
+        x_hat.vectorize(xy, vec_xy);
         x_hat.realize(x_hat_view);
 
         // output algo
@@ -112,9 +112,9 @@ namespace bdlearn {
         Halide::Buffer<float> beta_view(beta_.get(), channels_, "beta_view");
         out_func(x, y, c, n) = x_hat_view(x, y, c, n) * gamma_view(c) + beta_view(c);
         // output schedule
-        /*
+        
         out_func.fuse(x, y, xy);
-        out_func.vectorize(xy, vec_xy);*/
+        out_func.vectorize(xy, vec_xy);
         out_func.realize(out);
 
         // update running mean algo
@@ -123,7 +123,7 @@ namespace bdlearn {
         Halide::Func update_r_mean;
         update_r_mean(c) = (1.0f - BNORM_MOMENTUM) * r_mean_view(c) + BNORM_MOMENTUM * mu_view(c);
         // update running mean schedule
-        //update_r_mean.vectorize(c, vec_r);
+        update_r_mean.vectorize(c, vec_r);
         update_r_mean.realize(r_mean_view);
 
         // update running var algo
@@ -131,7 +131,7 @@ namespace bdlearn {
         Halide::Func update_r_var;
         update_r_var(c) = (1.0f - BNORM_MOMENTUM) * r_var_view(c) + BNORM_MOMENTUM * var_view(c);
         // update running var schedule
-        //update_r_var.vectorize(c, vec_r);
+        update_r_var.vectorize(c, vec_r);
         update_r_var.realize(r_var_view);
     }
 
@@ -239,11 +239,22 @@ namespace bdlearn {
         Halide::Buffer<float> beta_view(beta_.get(), channels_);
         desc_beta_f(c) = beta_view(c) - lr * dbeta_view(c);
         desc_beta_f.realize(beta_view);
-
         /*
+        std::cout << "dgamma: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << dgamma_[i] << ", ";
+        }
+        std::cout << std::endl;
+        
         std::cout << "gamma: " << std::endl;
         for (int i = 0; i < channels_; ++i) {
             std::cout << gamma_[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "dbeta: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << dbeta_[i] << ", ";
         }
         std::cout << std::endl;
 

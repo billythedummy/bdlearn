@@ -21,7 +21,8 @@ namespace bdlearn {
             // default - random initialized
             // k - kernel size, s - stride, in_c - in channels, out_c - out channels
             BConvLayer(const int k, const int in_c, const int out_c, const int s=1, bool train=false)
-                : w_(out_c, k*k*in_c), k_(k), s_(s), in_c_(in_c), out_c_(out_c), size_(out_c * k * k * in_c) {
+                : w_(out_c, k*k*in_c), k_(k), s_(s), in_c_(in_c), out_c_(out_c), size_(out_c * k * k * in_c),
+                lambda_(0.01) {
                 float* w_real = new float[size_];
                 float n = k * k * out_c;
                 // Random init train_w_
@@ -71,6 +72,7 @@ namespace bdlearn {
             int in_c_;
             int out_c_;
             int size_;
+            float lambda_;
             // training vars
             Halide::Buffer<float> prev_in_; // previous input
             std::unique_ptr<float[]> prev_i2c_; // im2col of previous input

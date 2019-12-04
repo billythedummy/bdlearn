@@ -130,7 +130,7 @@ namespace bdlearn {
         // no oob cos we're doing valid padding only
         im2col_f(x, y, n) = in(x_index, y_index, c, n);
         // Schedule
-        /*
+        
         Halide::Var x_outer, y_outer, x_inner, y_inner, tile_index;
         Halide::Expr tile_dim_x = out.dim(0).extent() > 64 ? 64 : out.dim(0).extent();
         Halide::Expr tile_dim_y = out.dim(1).extent() > 64 ? 64 : out.dim(1).extent();
@@ -142,7 +142,8 @@ namespace bdlearn {
         Halide::Expr pair_dim_y = out.dim(1).extent() > 2 ? 2 : out.dim(1).extent();
         im2col_f.tile(x_inner, y_inner, x_inner_outer, y_inner_outer, x_vectors, y_pairs, vec_dim_x, pair_dim_y)
                 .vectorize(x_vectors)
-                .unroll(y_pairs);*/
+                .unroll(y_pairs);
+                
         im2col_f.realize(out);
     }
 
