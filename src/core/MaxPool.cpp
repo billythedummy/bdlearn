@@ -68,8 +68,8 @@ namespace bdlearn {
                 for (int h = 0; h < ppg_h; h++) {
                     for (int w = 0; w < ppg_w; w++) {
                         cur_index = w + ppg_w * h + ppg_w * ppg_h * c + ppg_w * ppg_h * ppg_c * n;
-                        cur_x = max_x_arr[cur_index];
-                        cur_y = max_y_arr[cur_index];
+                        cur_x = (max_x_arr[cur_index] - 1) * s_ + k_;
+                        cur_y = (max_y_arr[cur_index] - 1) * s_ + k_;
                         buf[cur_x + out_w * cur_y + out_w * out_h * c + out_w * out_h * ppg_c * n] = ppg_arr[cur_index];
                     }
                 }
