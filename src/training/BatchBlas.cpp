@@ -78,6 +78,7 @@ namespace bdlearn {
         out_f.realize(out);
     }
 
+    /*
     void BatchMatMul_ABr(Halide::Buffer<float> out, Halide::Buffer<float> A, Halide::Buffer<float> B) {
         // A Halide dims: cols, rows
         // B Halide dims: cols, rows, batch
@@ -100,7 +101,7 @@ namespace bdlearn {
         // not smart enough to optimize this
         out_f.parallel(n);
         out_f.realize(out);
-    }
+    }*/
 
     /*
     void BatchIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
@@ -125,7 +126,7 @@ namespace bdlearn {
         Halide::Expr y_index = top_left_y_index + row_in_nb;
         Halide::Expr col_in_nb = pix_index_in_patch % k; // pix_index_in_patch % k
         Halide::Expr x_index = top_left_x_index + col_in_nb;
-        /*
+        
         Halide::Expr oob = y_index < 0 || y_index >= in.dim(1).extent() || x_index < 0 || x_index >= in.dim(0).extent();
         im2col_f(x, y, n) = Halide::select(oob, 0.0f, in(x_index, y_index, c, n));
         // no oob cos we're doing valid padding only
@@ -148,6 +149,7 @@ namespace bdlearn {
         im2col_f.realize(out);
     }*/
 
+    /*
     void BatchCol2ImAccum(Halide::Buffer<float> out, Halide::Buffer<float> in,
                             const int p, const int s, const int k,
                             const int out_width, const int out_height) {
@@ -176,5 +178,5 @@ namespace bdlearn {
         // Schedule
         col2im_accum_f.parallel(n);
         col2im_accum_f.realize(out);
-    }
+    }*/
 }

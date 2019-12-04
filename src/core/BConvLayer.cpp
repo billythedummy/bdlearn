@@ -45,7 +45,7 @@ namespace bdlearn {
         // Matmul
         float* out_begin = out.get()->begin(); // this is super hacky i know
         Halide::Buffer<float> out_view(out_begin, w_im2col, out_c_, batches);
-        BatchMatMul_ABr(out_view, sign_w_view, sign_in_im2col_view);
+        libbatchmatmulabr(*sign_w_view.get(), *sign_in_im2col_view.get(), *out_view.get());
         // free temp arrays
         delete[] sign_in;
     }
@@ -113,7 +113,7 @@ namespace bdlearn {
         float* dcol = new float [batches * kkic * total_space];
         Halide::Buffer<float> dcol_view(dcol, total_space, kkic, batches, "dcol_view");
         BatchMatMul_ATBr(dcol_view, w_view, ppg_re);
-        BatchCol2ImAccum(out, dcol_view, 0, s_, k_, out_width, out_height);
+        libbatchcol2imaccum(*dcol_view.get(), 0, s_, k_, out_width, out_height, *out.get());
 
         // dl/dx algo
         Halide::Func dx_ste_f;

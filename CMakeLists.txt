@@ -25,6 +25,8 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/schedules)
 target_link_libraries(bdlearn
     Halide
     batchim2col
+    batchcol2imaccum
+    batchmatmulabr
     # THESE MUST COME LAST
     pthread
     dl

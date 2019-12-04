@@ -32,7 +32,7 @@ namespace bdlearn {
         float* out_begin = out.get()->begin(); // this is super hacky i know
         Halide::Buffer<float> out_view(out_begin, w_im2col, out_c_, batches);
         Halide::Buffer<float> w_view(train_w_.get(), k_*k_*in_c_, out_c_);
-        BatchMatMul_ABr(out_view, w_view, sign_in_im2col_view);
+        libbatchmatmulabr(*w_view.get(), *sign_in_im2col_view.get(), *out_view.get());
     }
 
     void ConvLayer::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
@@ -91,7 +91,7 @@ namespace bdlearn {
         float* dcol = new float [batches * kkic * total_space];
         Halide::Buffer<float> dcol_view(dcol, total_space, kkic, batches, "dcol_view");
         BatchMatMul_ATBr(dcol_view, w_view, ppg_re);
-        BatchCol2ImAccum(out, dcol_view, 0, s_, k_, out_width, out_height);
+        libbatchcol2imaccum(*dcol_view.get(), 0, s_, k_, out_width, out_height, *out.get());
 
         // free
         delete[] dsignw;
