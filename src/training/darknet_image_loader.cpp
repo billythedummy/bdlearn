@@ -109,7 +109,7 @@ char *fgetl(FILE *fp)
     return line;
 }
 
-dn_list *get_lines(char *filename)
+dn_list *get_lines(char const* filename)
 {
     char *path;
     FILE *file = fopen(filename, "r");

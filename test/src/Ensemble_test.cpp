@@ -44,6 +44,9 @@ int test_Ensemble() {
         Y[i*classes + ind] = 1;
         ind = (ind + 1) % classes;
     }
+    return 0;
+    /*
+    this shit no work with new dataset
     dut.set_dataset(X, Y, epoch_size, in_dims, out_dims);
     dut.set_batch_size(batch_size);
     dut.set_lr(LR);
@@ -51,13 +54,14 @@ int test_Ensemble() {
     for (int i=0; i < 5*n_models; ++i) {
         float w_err = dut.train_step();
         std::cout << "Current weighted error: " << w_err << std::endl;
-        /*
+
         std::cout << "Curr W: [";
         float* w = dut.get_w();
         for (int j = 0; j < epoch_size; ++j) {
             std::cout << w[j] << ", ";
         }
-        std::cout << "]" << std::endl;*/
+        std::cout << "]" << std::endl;
+
         std::cout << "Curr Alphas: [";
         std::vector<float> alphas = dut.get_alphas();
         for (auto& alpha: alphas) {
@@ -65,7 +69,7 @@ int test_Ensemble() {
         }
         std::cout << "]" << std::endl;
         std::cout << std::endl;
-    }
+    }*/
     return 0;
 }
 

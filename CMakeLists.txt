@@ -11,16 +11,17 @@ add_library(bdlearn
     src/core/SAMMEEnsemble.cpp
     src/core/utils.cpp
 
+
     src/training/BatchBlas.cpp
     src/training/SoftmaxCrossEntropy.cpp
     src/training/WeightedSoftmaxCrossEntropy.cpp
     src/training/DataSet.cpp
-    src/training/darknet_image_loader.c
+    src/training/darknet_image_loader.cpp
 )
 
 # dependencies
 target_link_libraries(bdlearn
-    Halide
+    /homes/iws/jula99/455/Halide/bin
 )
 
 # include

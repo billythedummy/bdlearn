@@ -5,6 +5,7 @@
 #include "bdlearn/BufDims.hpp"
 #include "bdlearn/Model.hpp"
 #include "bdlearn/utils.hpp"
+#include "bdlearn/DataSet.hpp"
 
 namespace bdlearn {
     class SAMMEEnsemble {
@@ -26,8 +27,8 @@ namespace bdlearn {
             void load_ensemble(std::string path);
             // getter setters
             void set_lr(const float lr) {for (auto& model_ptr: model_ptrs_) model_ptr->set_lr(lr);}
-            void set_batch_size(const int batch_size) {batch_size_ = batch_size;}
-            void set_dataset(float* X, float* Y, const int n, const bufdims in_dims, const bufdims out_dims);
+            void set_batch_size(const int batch_size);
+            void set_dataset(DataSet* dataset);
             int get_n_models(void) {return model_ptrs_.size();}
             // for debugging
             float* get_w(void) {return w_.get();}
@@ -39,21 +40,14 @@ namespace bdlearn {
         private:
             // delete assigment
             Model& operator=(const Model& ref) = delete;
-            // private functions
-            void shuffle_train_i(void);
-            /*void batch_op_over_epoch(float (*op) (Halide::Buffer<float> x, Halide::Buffer<float> y, void* out),
-                                    void* args = nullptr);*/
             // private fields
             std::vector< std::unique_ptr<Model> > model_ptrs_;
             std::vector<float> alphas_; // weights for each model
             bufdims in_dims_;
-            bufdims out_dims_;
+            int classes_;
             // training params
-            float* train_X_;
-            float* train_Y_;
             std::unique_ptr<float[]> w_; // weights for each training example
-            std::unique_ptr<int[]> train_i_; // order of iteration for training this epoch
-            int epoch_size_;
+            DataSet* dataset_;
             bool training_;
             int batch_size_;
             float lr_;

@@ -11,6 +11,7 @@ add_executable(bdlearn_test
     src/Softmax_test.cpp
     src/Ensemble_test.cpp
     src/DataSet_test.cpp
+    src/CIFAR_test.cpp
 )
 
 # link to main lib
