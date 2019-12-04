@@ -22,11 +22,13 @@ namespace bdlearn {
         std::ifstream fin1, fin2;
         fin1.open(path1, std::ios::in);
         fin2.open(path2, std::ios::in);
-        std::string line_in, line_out, temp;
+        std::string line1, line2, temp;
         while (fin1 >> temp) {
-            getline(fin1, line_in);
-            getline(fin2, line_out);
-            if (line_in.compare(line_out) != 0) {
+            getline(fin1, line1);
+            getline(fin2, line2);
+            if (line1.compare(line2) != 0) {
+                std::cerr << line1 << std::endl;
+                std::cerr << line2 << std::endl;
                 return -1;
             }
         }

@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <iostream>
+
 namespace bdlearn {
     void save_arr(float* save_arr, int size, std::ofstream& fout);
     void load_arr(float* load_arr, int size, std::ifstream& fin);
