@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     // if (test_DataSet()) return -1;
     // if (test_save_load_BConvLayer()) return -1;
     // if (test_save_load_BatchNorm()) return -1;
-    // if (test_save_load_model()) return -1;
+    if (test_save_load_model()) return -1;
     if (test_save_load_ensemble()) return -1; 
     std::cout << "All tests passed!" << std::endl;
     return 0;
