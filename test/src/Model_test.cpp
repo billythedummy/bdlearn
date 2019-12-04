@@ -140,6 +140,8 @@ int test_save_load_model() {
         getline(fin, line_in);
         getline(fin2, line_out);
         if (line_in.compare(line_out) != 0) {
+            std::cout << line_in << std::endl;
+            std::cout << line_out << std::endl;
             std::cerr << "Error in output file" << std::endl;
             return -1;
         }
