@@ -99,6 +99,7 @@ int test_save_load_ensemble() {
     }
     std::string in_path = "./test/test_weights/EnsembleTestIn.csv";
     std::string out_path = "./test/test_weights/EnsembleTestOut.csv";
+    dut.load_ensemble(in_path);
     dut.save_ensemble(out_path);
     return compare_file_output(in_path, out_path);
 }
