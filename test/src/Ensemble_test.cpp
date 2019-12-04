@@ -97,6 +97,8 @@ int test_save_load_ensemble() {
         m->loss_weighted_softmax_cross_entropy();
         dut.add_model(m);
     }
-    dut.save_ensemble("./test/test_weights/EnsembleTestOut.csv");
-    return 0;
+    std::string in_path = "./test/test_weights/EnsembleTestIn.csv";
+    std::string out_path = "./test/test_weights/EnsembleTestOut.csv";
+    dut.save_ensemble(out_path);
+    return compare_file_output(in_path, out_path);
 }
