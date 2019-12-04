@@ -32,6 +32,6 @@ namespace bdlearn {
         }
         fin1.close();
         fin2.close();
+        return 0;
     }
-    return 0;
 }
