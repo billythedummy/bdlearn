@@ -3,14 +3,14 @@
 using namespace bdlearn;
 
 int test_CIFAR(void) {
-    const int batch_size = 16; //32, 8
+    const int batch_size = 50; // <= 50
     const int n_models = 5; // 1
     const bufdims in_dims = {.w=32, .h=32, .c=3};
     const int classes = 10;
     // make dataset
     DataSet ds;
-    ds.load_darknet_classification("/home/dhy1996/uwimg/mnist.mini",
-                                "/home/dhy1996/uwimg/mnist.labels");
+    ds.load_darknet_classification("/home/dhy1996/uwimg/cifar_tiny.train",
+                                "/home/dhy1996/uwimg/cifar.labels");
     /*"/home/dhy1996/uwimg/cifar_tiny.train",
                                 "/home/dhy1996/uwimg/cifar.labels"*/
     std::cout << "Loading dataset done" << std::endl;
@@ -19,9 +19,9 @@ int test_CIFAR(void) {
     for (int i = 0; i < n_models; ++i) {
         Model* m = new Model(in_dims, true);
         m->append_batch_norm();
-        m->append_bconv(5, 12); // 28
+        m->append_bconv(5, 32); // 28
         m->append_batch_norm();
-        m->append_bconv(3, 24); // 26
+        m->append_bconv(3, 64); // 26
         m->append_gap();
         m->append_batch_norm();
         m->append_bconv(1, classes);
@@ -55,7 +55,7 @@ int test_CIFAR(void) {
             en.set_batch_size(batch_size);
         }
         float w_err = en.train_step();
-        std::cout << "Model " << (i & n_models) << " Weighted error: " << w_err << std::endl;
+        std::cout << "Model " << (i % n_models) << " Weighted error: " << w_err << std::endl;
         std::cout << "Curr Alphas: [";
         std::vector<float> alphas = en.get_alphas();
         for (auto& alpha: alphas) {

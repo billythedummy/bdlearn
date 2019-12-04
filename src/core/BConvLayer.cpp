@@ -27,7 +27,7 @@ namespace bdlearn {
         Halide::Var x, y, c, n;
         Halide::Func sign_in_f;
         sign_in_f(x, y, c, n) = Halide::select(in(x, y, c, n) >= 0, 1.0f, -1.0f);
-        float sign_in [cols*rows*in_c_*batches];
+        float* sign_in = new float [cols*rows*in_c_*batches];
         Halide::Buffer<float> sign_in_view(sign_in, cols, rows, in_c_, batches);
         sign_in_f.realize(sign_in_view);
         // Sign W
@@ -46,6 +46,8 @@ namespace bdlearn {
         float* out_begin = out.get()->begin(); // this is super hacky i know
         Halide::Buffer<float> out_view(out_begin, w_im2col, out_c_, batches);
         BatchMatMul_ABr(out_view, sign_w_view, sign_in_im2col_view);
+        // free temp arrays
+        delete[] sign_in;
     }
 
     void BConvLayer::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
@@ -88,7 +90,7 @@ namespace bdlearn {
         
         // dl/dsign(w) algo
         Halide::Var x, y, c, n;
-        float dsignw [kkic*out_c_*batches];
+        float* dsignw = new float [kkic*out_c_*batches];
         Halide::Buffer<float> dsignwbatch_view(dsignw, kkic, out_c_, batches);
         Halide::Buffer<float> prev_i2c_view(prev_i2c_.get(), total_space, kkic, batches);
         BatchMatMul_BT(dsignwbatch_view, ppg_re, prev_i2c_view);
@@ -108,7 +110,7 @@ namespace bdlearn {
         dw_ste_f.realize(dw_view);
 
         // dl/dsign(x) algo
-        float dcol [batches * kkic * total_space];
+        float* dcol = new float [batches * kkic * total_space];
         Halide::Buffer<float> dcol_view(dcol, total_space, kkic, batches, "dcol_view");
         BatchMatMul_ATBr(dcol_view, w_view, ppg_re);
         BatchCol2ImAccum(out, dcol_view, 0, s_, k_, out_width, out_height);
@@ -119,6 +121,10 @@ namespace bdlearn {
         dx_ste_f(x, y, c, n) = out(x, y, c, n) * x_ste_sel;
         // dl/dx schedule
         dx_ste_f.realize(out);
+
+        // free
+        delete[] dsignw;
+        delete[] dcol;
     }
 
     bufdims BConvLayer::calc_out_dim(bufdims in_dims) {
