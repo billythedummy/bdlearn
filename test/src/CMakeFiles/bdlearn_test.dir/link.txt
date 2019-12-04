@@ -1,0 +1,1 @@
+/opt/rh/devtoolset-7/root/usr/bin/c++    -rdynamic CMakeFiles/bdlearn_test.dir/main.o CMakeFiles/bdlearn_test.dir/BMat_basic.o CMakeFiles/bdlearn_test.dir/Halide_test.o  -o bdlearn_test -lbdlearn 

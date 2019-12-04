@@ -1,0 +1,3 @@
+/homes/iws/jula99/455/bdlearn/test/src/CMakeFiles/rebuild_cache.dir
+/homes/iws/jula99/455/bdlearn/test/src/CMakeFiles/edit_cache.dir
+/homes/iws/jula99/455/bdlearn/test/src/CMakeFiles/bdlearn_test.dir

@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/homes/iws/jula99/455/bdlearn/test/src/BMat_basic.hpp
+bdlearn/BMat.hpp
+-
+
+/homes/iws/jula99/455/bdlearn/test/src/Halide_test.hpp
+Halide.h
+/homes/iws/jula99/455/bdlearn/test/src/Halide.h
+
+/homes/iws/jula99/455/bdlearn/test/src/main.cpp
+include/bdlearn/bdlearn.hpp
+-
+iostream
+-
+BMat_basic.hpp
+/homes/iws/jula99/455/bdlearn/test/src/BMat_basic.hpp
+Halide_test.hpp
+/homes/iws/jula99/455/bdlearn/test/src/Halide_test.hpp
+
