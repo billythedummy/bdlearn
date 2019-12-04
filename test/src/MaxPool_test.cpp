@@ -6,6 +6,7 @@ int test_MaxPool_forward_t() {
     const int h = 4;
     const int c = 3;
     const int batch = 5;
+    const int max = 17;
     const int X_size = w*h*c*batch;
     const int Y_size = c*batch;
 
@@ -13,12 +14,14 @@ int test_MaxPool_forward_t() {
     float X [X_size];
     for (int i = 0; i < c * batch; i++) {
         for (int j = 0; j < w * h; j++) {
-            if (j % 4 == 0) {
-                X[i*j] = 10;
+            if (j % 2 == 0) {
+                X[i*w*h+j] = max;
             } else {
-                X[i*j] = j;
+                X[i*w*h+j] = j;
             }
+            std::cout << X[i*w*h+j] << ", ";
         }
+        std::cout << std::endl;
     }
 
     float Y [Y_size];
@@ -27,7 +30,8 @@ int test_MaxPool_forward_t() {
     t1.forward_t(Y_view, X_view);
 
     for (int i = 0; i < Y_size; i++) {
-        if (Y[i] != 10) {
+        if (Y[i] != max) {
+            std::cout << Y[i] << std::endl;
             return -1;
         }
     }

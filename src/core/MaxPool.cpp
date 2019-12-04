@@ -6,7 +6,6 @@ namespace bdlearn {
         prev_in_ = in;
         has_batches = false;
         // check dimens
-        assert(out.dim(0).extent() == 1 && out.dim(1).extent() == 1); // w, h == 1
         assert(out.dim(2).extent() == in.dim(2).extent()); // c == c
         assert(out.dim(3).extent() == in.dim(3).extent()); // batch == batch
 
@@ -18,11 +17,11 @@ namespace bdlearn {
         f(x, y, dx, dy, c, n) = in(x_ + dx, y_ + dy, c, n);
 
         Halide::RDom space(0, k_, 0, k_);
-        max_f(x, y, c) = Halide::argmax(f(x, y, space.x, space.y, c));
+        max_f(x, y, c, n) = Halide::argmax(f(x, y, space.x, space.y, c, n));
         Halide::Realization maxes = max_f.realize(out.dim(0).extent(), out.dim(1).extent(), out.dim(2).extent(), out.dim(3).extent());
         max_x_ = maxes[0];
         max_y_ = maxes[1];
-        max_val_ = maxes[4];
+        max_val_ = maxes[2];
         out.copy_from(max_val_);
     }
 
