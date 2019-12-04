@@ -52,10 +52,13 @@ namespace bdlearn {
         int* max_x_arr = max_x_.begin();
         int* max_y_arr = max_y_.begin();
         float* ppg_arr = ppg.begin();
-        size_t ppg_w = max_x_.dim(0).extent();
-        size_t ppg_h = max_x_.dim(1).extent();
-        size_t ppg_c = max_x_.dim(2).extent();
-        size_t ppg_n = max_x_.dim(3).extent();
+        size_t ppg_w = ppg.dim(0).extent();
+        size_t ppg_h = ppg.dim(1).extent();
+        size_t ppg_c = ppg.dim(2).extent();
+        size_t ppg_n = ppg.dim(3).extent();
+
+        size_t out_w = out.dim(0).extent();
+        size_t out_h = out.dim(1).extent();
 
         size_t cur_x = 0;
         size_t cur_y = 0;
@@ -67,7 +70,7 @@ namespace bdlearn {
                         cur_index = w + ppg_w * h + ppg_w * ppg_h * c + ppg_w * ppg_h * ppg_c * n;
                         cur_x = max_x_arr[cur_index];
                         cur_y = max_y_arr[cur_index];
-                        buf[cur_x + ppg_w* cur_y + ppg_w * ppg_h * c + ppg_w * ppg_h * ppg_c * n] = ppg_arr[cur_index];
+                        buf[cur_x + out_w * cur_y + out_w * out_h * c + out_w * out_h * ppg_c * n] = ppg_arr[cur_index];
                     }
                 }
             }
