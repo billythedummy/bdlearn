@@ -40,7 +40,7 @@ namespace bdlearn {
         // im2col input
         float* sign_in_im2col = new float[h_im2col * w_im2col * batches];
         Halide::Buffer<float> sign_in_im2col_view (sign_in_im2col, w_im2col, h_im2col, batches);
-        BatchIm2Col(sign_in_im2col_view, sign_in_view, 0, s_, k_, out_width, out_height);
+        libbatchim2col(*sign_in_view.get(), 0, s_, k_, out_width, out_height, *sign_in_im2col_view.get());
         prev_i2c_.reset(sign_in_im2col);
         // Matmul
         float* out_begin = out.get()->begin(); // this is super hacky i know

@@ -10,6 +10,7 @@
 #include "bdlearn/Layer.hpp"
 // for training
 #include "bdlearn/BatchBlas.hpp"
+#include "schedules/libbatchim2col.h"
 
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))

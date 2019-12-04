@@ -22,7 +22,7 @@ namespace bdlearn {
         Halide::Func out_f;
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
-        // out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -48,7 +48,7 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -74,7 +74,7 @@ namespace bdlearn {
         // Schedule
         // not smart enough to optimize this
         //Halide::Var xi, yi, xy, yii;
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -98,10 +98,11 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
+    /*
     void BatchIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
                         const int p, const int s, const int k,
                         const int out_width, const int out_height) {
@@ -126,7 +127,7 @@ namespace bdlearn {
         Halide::Expr x_index = top_left_x_index + col_in_nb;
         /*
         Halide::Expr oob = y_index < 0 || y_index >= in.dim(1).extent() || x_index < 0 || x_index >= in.dim(0).extent();
-        im2col_f(x, y, n) = Halide::select(oob, 0.0f, in(x_index, y_index, c, n));*/
+        im2col_f(x, y, n) = Halide::select(oob, 0.0f, in(x_index, y_index, c, n));
         // no oob cos we're doing valid padding only
         im2col_f(x, y, n) = in(x_index, y_index, c, n);
         // Schedule
@@ -145,7 +146,7 @@ namespace bdlearn {
                 .unroll(y_pairs);
                 
         im2col_f.realize(out);
-    }
+    }*/
 
     void BatchCol2ImAccum(Halide::Buffer<float> out, Halide::Buffer<float> in,
                             const int p, const int s, const int k,
@@ -173,7 +174,7 @@ namespace bdlearn {
         Halide::Expr which_patch_clamped = Halide::clamp(which_patch, 0, out_width * out_height - 1);
         col2im_accum_f(x, y, c, n) += Halide::select(invalid, 0.0f, in(which_patch_clamped, row_index, n));
         // Schedule
-        //col2im_accum_f.parallel(n);
+        col2im_accum_f.parallel(n);
         col2im_accum_f.realize(out);
     }
 }

@@ -9,6 +9,7 @@
 #include "bdlearn/Layer.hpp"
 // for training
 #include "bdlearn/BatchBlas.hpp"
+#include "schedules/libbatchim2col.h"
 
 namespace bdlearn {
     class ConvLayer: public Layer {

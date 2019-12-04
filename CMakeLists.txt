@@ -19,9 +19,15 @@ add_library(bdlearn
     src/training/darknet_image_loader.cpp
 )
 
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/schedules)
+
 # dependencies
 target_link_libraries(bdlearn
     Halide
+    batchim2col
+    # THESE MUST COME LAST
+    pthread
+    dl
 )
 
 # include
