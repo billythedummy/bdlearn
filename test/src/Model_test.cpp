@@ -132,6 +132,6 @@ int test_save_load_model() {
     }
     dut.save_model(fout);
     fout.close();
-    // compare output files
+    // compare output file to original input file
     return compare_file_output(out_path, in_path);
 }
