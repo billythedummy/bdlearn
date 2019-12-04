@@ -16,22 +16,22 @@ int test_MNIST(void) {
     SAMMEEnsemble en(true);
     for (int i = 0; i < n_models; ++i) {
         Model* m = new Model(in_dims, true);
-        m->append_batch_norm();
-        m->append_bconv(5, 128); // 24
+        m->append_conv(5, 6); // 24
         m->append_max_pool(2); // 12
         m->append_batch_norm();
-        m->append_bconv(3, 512); // 10
+        m->append_bconv(3, 16); // 10
         m->append_max_pool(2); // 5
         m->append_batch_norm();
-        m->append_bconv(3, classes); 
+        m->append_bconv(3, 32); // 3
         m->append_gap();
+        m->append_conv(1, classes);
         m->loss_weighted_softmax_cross_entropy();
         //m->loss_softmax_cross_entropy();
         en.add_model(m);
     }
     en.set_batch_size(batch_size);
     en.set_dataset(&ds);
-    en.set_lr(0.001f);
+    en.set_lr(1E-2f);
     // fuh reel
     for (int i=0; i < 100; ++i) {
         if (i % n_models == 0) {

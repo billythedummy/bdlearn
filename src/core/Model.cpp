@@ -81,6 +81,11 @@ namespace bdlearn {
         register_last_layer(new_layer);
     }
 
+    void Model::append_conv(const int k, const int out_c, const int s) {
+        Layer* new_layer = new ConvLayer(k, out_dims_.c, out_c, s, training_);
+        register_last_layer(new_layer);
+    }
+
     void Model::append_gap() {
         Layer* new_layer = new GAP(training_);
         register_last_layer(new_layer);
