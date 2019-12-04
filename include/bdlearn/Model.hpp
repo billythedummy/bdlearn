@@ -38,7 +38,7 @@ namespace bdlearn {
             void loss_weighted_softmax_cross_entropy(void);
             // getter setters
             void set_lr(float lr) {lr_ = lr;}
-            std::vector<std::unique_ptr<Layer>> get_layer_ptrs(void) { return layer_ptrs_; }
+            std::vector<std::unique_ptr<Layer>>& get_layer_ptrs(void) { return layer_ptrs_; }
         
         // friend operators
         //friend std::ostream& operator<<(std::ostream& os, const Layer& l);
