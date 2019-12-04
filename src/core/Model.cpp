@@ -76,12 +76,12 @@ namespace bdlearn {
     }
     void Model::save_model(std::ofstream& fout) {
         for (unsigned int i = 0; i < layer_ptrs_.size(); ++i) {
-            layer_ptrs_[i]->save_layer(fout);
+            layer_ptrs_[i].get()->save_layer(fout);
         }
     }
     void Model::load_model(std::ifstream& fin) {
         for (unsigned int i = 0; i < layer_ptrs_.size(); ++i) {
-            layer_ptrs_[i]->load_layer(fin);
+            layer_ptrs_[i].get()->load_layer(fin);
         }
     }
     void Model::append_batch_norm() {
