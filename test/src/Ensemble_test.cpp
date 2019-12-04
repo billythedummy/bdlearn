@@ -97,6 +97,6 @@ int test_save_load_ensemble() {
         m->loss_weighted_softmax_cross_entropy();
         dut.add_model(m);
     }
-    dut.save_ensemble("./test/test_weights/EnsembleTestIn.csv");
+    dut.save_ensemble("./test/test_weights/EnsembleTestOut.csv");
     return 0;
 }
