@@ -1,5 +1,5 @@
-#ifndef _BDLEARN_BMAXPOOL_H_
-#define _BDLEARN_BMAXPOOL_H_
+#ifndef _BDLEARN_MAXPOOL_H_
+#define _BDLEARN_MAXPOOL_H_
 
 #include <cstddef>
 #include <iostream>
@@ -9,10 +9,10 @@
 #include "bdlearn/BMat.hpp"
 
 namespace bdlearn {
-    class BMaxPool: public Layer {
+    class MaxPool: public Layer {
         public:
             // Constructors
-            BMaxPool(const int k = 2, const int s = 2): k_(k), s_(s), has_batches(false) {};
+            MaxPool(const int k = 2, const int s = 2): k_(k), s_(s), has_batches(false) {};
 
             // public functions
             void forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in); // training

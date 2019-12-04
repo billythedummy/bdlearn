@@ -12,6 +12,7 @@ add_executable(bdlearn_test
     src/Ensemble_test.cpp
     src/DataSet_test.cpp
     src/CIFAR_test.cpp
+    src/MaxPool_test.cpp
 )
 
 # link to main lib

@@ -2,7 +2,7 @@
 
 namespace bdlearn {
 
-    void BMaxPool::forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) {
+    void MaxPool::forward_t(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         prev_in_ = in;
         has_batches = false;
         // check dimens
@@ -26,7 +26,7 @@ namespace bdlearn {
         out.copy_from(max_val_);
     }
 
-    void BMaxPool::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
+    void MaxPool::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         prev_in_ = in;
         has_batches = true;
         // check dimens
@@ -49,7 +49,7 @@ namespace bdlearn {
         out.copy_from(max_val_);
     }
 
-    void BMaxPool::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
+    void MaxPool::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
         float* buf = out.begin();
 
         // sets the buffer to be full of 0's

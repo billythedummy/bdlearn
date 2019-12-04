@@ -1,5 +1,5 @@
 #include "MaxPool_test.hpp"
-int test_forward_t() {
+int test_MaxPool_forward_t() {
     const int w = 4;
     const int h = 4;
     const int c = 3;
@@ -7,12 +7,12 @@ int test_forward_t() {
     const int X_size = w*h*c*batch;
     const int Y_size = c*batch;
 
-    BMaxPool t1(2, 2);
+    MaxPool::MaxPool t1(2, 2);
     float X [X_size];
     for (int i = 0; i < c * batch; i++) {
         for (int j = 0; j < w * h; j++) {
             if (j % 4 == 0) {
-                x[i*j] = 10;
+                X[i*j] = 10;
             } else {
                 X[i*j] = j;
             }
@@ -24,7 +24,7 @@ int test_forward_t() {
     Halide::Buffer<float> Y_view(Y, 2, 2, c, batch);
     t1.forward_t(Y_view, X_view);
 
-    for (i = 0; i < Y_size; i++) {
+    for (int i = 0; i < Y_size; i++) {
         if (Y[i] != 10) {
             return -1;
         }
@@ -33,6 +33,6 @@ int test_forward_t() {
     return 0;
 }
 
-int test_backward_t() {
+int test_MaxPool_backward_t() {
     return -1;
 }
