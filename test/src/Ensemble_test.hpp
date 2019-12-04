@@ -4,6 +4,7 @@
 #include <bdlearn/bdlearn.hpp>
 
 int test_Ensemble(void);
+int test_save_load_ensemble(void);
 
 #endif
 

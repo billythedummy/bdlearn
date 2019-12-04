@@ -247,7 +247,7 @@ int test_save_load_BatchNorm() {
     dut.set_r_mean(expected_r_mean);
     dut.set_r_var(expected_r_var);
 
-    std::string path = "./test_weights/BatchNormTest.csv";
+    std::string path = "./test/test_weights/BatchNormTest.csv";
     
     std::ofstream fout;
     fout.open(path, std::ios::out | std::ios::trunc);

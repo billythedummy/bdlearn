@@ -4,6 +4,7 @@
 #include "Halide.h"
 #include "bdlearn/BufDims.hpp"
 #include "bdlearn/Model.hpp"
+#include "bdlearn/utils.hpp"
 
 namespace bdlearn {
     class SAMMEEnsemble {
@@ -21,6 +22,8 @@ namespace bdlearn {
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in); // inference
             void forward_batch(float* out, Halide::Buffer<float> in);
             void add_model(Model* model);
+            void save_ensemble(std::string path);
+            void load_ensemble(std::string path);
             // getter setters
             void set_lr(const float lr) {for (auto& model_ptr: model_ptrs_) model_ptr->set_lr(lr);}
             void set_batch_size(const int batch_size) {batch_size_ = batch_size;}

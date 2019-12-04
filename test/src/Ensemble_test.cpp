@@ -68,3 +68,34 @@ int test_Ensemble() {
     }
     return 0;
 }
+
+int test_save_load_ensemble() {
+    // dims 
+    const int in_w = 5;
+    const int in_h = 5;
+    const int in_c = 3;
+    const bufdims in_dims = {in_w, in_h, in_c};
+    const int classes = 3;
+    const bufdims out_dims = {1, 1, classes};
+    const int batch_size = 64;
+    const int epoch_size = 150;
+    const int n_models = 5;
+    const int X_size = epoch_size * in_w * in_h * in_c;
+    const int Y_size = epoch_size * classes;
+    const float LR = 1E-7f;
+    // Create the ensemble
+    SAMMEEnsemble dut(true);
+    for (int i = 0; i < n_models; ++i) {
+        Model* m = new Model(in_dims, true);
+        m->append_batch_norm();
+        m->append_bconv(3, 7);
+        m->append_batch_norm();
+        m->append_bconv(1, 16);
+        m->append_batch_norm();
+        m->append_bconv(1, classes);
+        m->append_gap();
+        m->loss_weighted_softmax_cross_entropy();
+        dut.add_model(m);
+    }
+    dut.save_ensemble("./test/test_weights/EnsembleOut.csv");
+}

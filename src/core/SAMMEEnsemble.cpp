@@ -129,6 +129,26 @@ namespace bdlearn {
         alphas_.push_back(1.0f);
     }
 
+    void SAMMEEnsemble::save_ensemble(std::string path) {
+        std::ofstream fout;
+        fout.open(path, std::ios::out | std::ios::trunc);
+        assert(!fout.fail());
+        for (unsigned int i = 0; i < model_ptrs_.size(); ++i) {
+            model_ptrs_[i]->save_model(fout);
+        }
+        fout.close();
+    }
+
+    void SAMMEEnsemble::load_ensemble(std::string path) {
+        std::ifstream fin;
+        fin.open(path, std::ios::in);
+        assert(!fin.fail());
+        for (unsigned int i = 0; i < model_ptrs_.size(); ++i) {
+            model_ptrs_[i]->load_model(fin);
+        }
+        fin.close();
+    }
+
     void SAMMEEnsemble::set_dataset(float* X, float* Y,
                                     const int n, const bufdims in_dims, const bufdims out_dims) {
         // set dims
