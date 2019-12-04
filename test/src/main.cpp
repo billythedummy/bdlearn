@@ -12,6 +12,7 @@
 #include "GAP_test.hpp"
 #include "DataSet_test.hpp"
 #include "CIFAR_test.hpp"
+#include "MNIST_test.hpp"
 
 using namespace bdlearn;
 
@@ -34,7 +35,8 @@ int main(int argc, char **argv) {
     //if (test_Ensemble()) return -1;
     //if (test_Model()) return -1;
     //if (test_DataSet()) return -1;
-    if (test_CIFAR()) return -1;
+    //if (test_CIFAR()) return -1;
+    if (test_MNIST()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
