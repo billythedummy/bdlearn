@@ -114,13 +114,35 @@ int test_save_load_model() {
     dut.append_bconv(1, classes);
     dut.append_batch_norm();
     
-    std::string path = "./test/test_weights/ModelTest.csv";
+    std::string in_path = "./test/test_weights/ModelTestIn.csv";
+    std::ifstream fin, fin2;
+    fin.open(in_path, std::ios:in);
+    if (fin.fail()) {
+        std::cerr << "File failed to open" << std::endl;
+        return -1;
+    }
+    dut.load_model(fin);
+    fin.close();
+    std::string out_path = "./test/test_weights/ModelTestOut.csv";
     std::ofstream fout;
-    fout.open(path, std::ios::out | std::ios::trunc);
+    fout.open(out_path, std::ios::out | std::ios::trunc);
     if (fout.fail()) {
         std::cerr << "File failed to open" << std::endl;
         return -1;
     }
     dut.save_model(fout);
+    fout.close();
+    // compare output files
+    fin.open(in_path, std::ios::in);
+    fin2.open(out_path, std::ios::in);
+    std::string line_in, line_out, temp;
+    while (fin >> temp) {
+        getline(fin, line_in);
+        getline(fin2, line_out);
+        if (line_in.compare(line_out) != 0) {
+            std::cerr << "Error in output file" << std::endl;
+            return -1;
+        }
+    }
     return 0;
 }
