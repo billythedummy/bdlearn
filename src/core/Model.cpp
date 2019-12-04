@@ -74,7 +74,16 @@ namespace bdlearn {
         }
         return wrong / batch_size;
     }
-
+    void Model::save_model(std::ofstream& fout) {
+        for (int i = 0; i < layer_ptrs_.size(); ++i) {
+            layer_ptrs_[i]->save_layer(fout);
+        }
+    }
+    void Model::load_model(std::ofstream& fin) {
+        for (int i = 0; i < layer_ptrs_.size(); ++i) {
+            layer_ptrs_[i]->save_layer(fin);
+        }
+    }
     void Model::append_batch_norm() {
         Layer* new_layer = new BatchNorm(out_dims_.c, training_);
         register_last_layer(new_layer);

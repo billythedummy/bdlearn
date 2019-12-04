@@ -272,6 +272,8 @@ int test_save_load_BatchNorm() {
     dut.load_layer(fin);
     fin.close();
 
+    // only checks r_mean, r_var but if it behaves as expected,
+    // then gamma and beta should be set as well
     for (int i = 0; i < c; ++i) {
         assert(abs(dut.get_r_mean()[i] - expected_r_mean[i]) < 0.001);
         assert(abs(dut.get_r_var()[i] - expected_r_var[i]) < 0.001);

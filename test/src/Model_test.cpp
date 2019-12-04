@@ -97,3 +97,28 @@ int test_Model() {
     std::cout << std::endl;
     return 0;
 }
+
+int test_save_load_model() {
+    // train for OR
+    const int in_w = 1;
+    const int in_h = 1;
+    const int in_c = 2;
+    const int batch = 10;
+    const int classes = 2;
+    // define model
+    const bufdims in_dims {in_w, in_h, in_c};
+    const int X_size = in_w * in_h * in_c * batch;
+    Model dut(in_dims, true);
+    dut.append_batch_norm();
+    dut.append_bconv(1, classes);
+    
+    std::string path = "./test_weights/ModelTest.csv";
+    std::ofstream fout;
+    fout.open(path, std::ios::out | std::ios::trunc);
+    if (fout.fail()) {
+        std::cerr << "File failed to open" << std::endl;
+        return -1;
+    }
+    dut.save_model(fout);
+    return 0;
+}

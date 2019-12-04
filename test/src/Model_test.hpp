@@ -4,6 +4,6 @@
 #include <bdlearn/bdlearn.hpp>
 
 int test_Model(void);
-
+int test_save_load_model(void);
 #endif
 

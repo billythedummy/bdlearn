@@ -28,6 +28,8 @@ namespace bdlearn {
             void forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in); // inference
             void forward_batch(float* out, Halide::Buffer<float> in);
             float eval(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* is_wrong_out);
+            void save_model(std::ofstream& fout);
+            void load_model(std::ofstream& fin);
             // layers
             void append_batch_norm(void);
             void append_bconv(const int k, const int out_c, const int s=1);
@@ -36,7 +38,7 @@ namespace bdlearn {
             void loss_weighted_softmax_cross_entropy(void);
             // getter setters
             void set_lr(float lr) {lr_ = lr;}
-            
+            std::vector<std::unique_ptr<Layer>> get_layer_ptrs(void) { return layer_ptrs_; }
         
         // friend operators
         //friend std::ostream& operator<<(std::ostream& os, const Layer& l);
