@@ -20,7 +20,7 @@ add_library(bdlearn
 
 # dependencies
 target_link_libraries(bdlearn
-    /homes/iws/jula99/455/Halide/bin
+    Halide
 )
 
 # include
