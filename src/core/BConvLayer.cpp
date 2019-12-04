@@ -50,7 +50,28 @@ namespace bdlearn {
 
     void BConvLayer::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
         // TO-DO
-        return;
+        const int cols = in.dim(0).extent();
+        const int rows = in.dim(1).extent();
+
+        const int out_height = (rows - k_) / s_ + 1;
+        const int out_width = (cols - k_) / s_ + 1;
+        const int patch_area = k_* k_;
+        const int h_im2col = patch_area * in_c_;
+        const int w_im2col = out_height * out_width;
+
+        // Put in into im2col
+        float* in_im2col = new float[h_im2col * w_im2col];
+        Halide::Buffer<float> in_im2col_view (in_im2col, w_im2col, h_im2col);
+        BConvIm2Col(in_im2col_view, in, 0, s_, k_, out_width, out_height);
+        // Make BMat with in_im2col
+        BMat in_mat(h_im2col, w_im2col, in_im2col);
+        // Matmul weights with BMat
+        float* out_begin = out.get()->begin(); // this is super hacky i know
+        Halide::Buffer<float> out_view(out_begin, in_mat.cols(), w_.rows());
+        matmul(out_view, w_, in_mat);
+
+        prev_in_ = in;
+        prev_i2c_.reset(in_im2col);
     }
 
     void BConvLayer::backward(Halide::Buffer<float> out, Halide::Buffer<float> ppg) {
@@ -150,5 +171,36 @@ namespace bdlearn {
                                 + in_c * k_ * k_
                                 + y * k_
                                 + x];
+    }
+
+    // Helper im2col, same as BatchIm2Col without n
+    void BConvIm2Col(Halide::Buffer<float> out, Halide::Buffer<float> in,
+                        const int p, const int s, const int k,
+                        const int out_width, const int out_height) {
+        // in Halide dims: cols, rows, channels, batch
+        // out Halide dims: n_patches, kkc, batch
+        assert(out.dim(0).extent() == out_width * out_height);
+        assert(out.dim(1).extent() == k*k*in.dim(2).extent());
+        const int patch_area = k * k;
+        // Algo
+        Halide::Var x, y; // i is y, j is x
+        Halide::Func im2col_f;
+        Halide::Expr c = y / patch_area;
+        Halide::Expr pix_index_in_patch = y % patch_area;
+        Halide::Expr which_row = x / out_width;
+        Halide::Expr which_patch_in_row = x % out_width; // x % out_width
+        Halide::Expr top_left_y_index = which_row * s - p;
+        Halide::Expr top_left_x_index = which_patch_in_row * s - p;
+        Halide::Expr row_in_nb = pix_index_in_patch / k;
+        Halide::Expr y_index = top_left_y_index + row_in_nb;
+        Halide::Expr col_in_nb = pix_index_in_patch % k; // pix_index_in_patch % k
+        Halide::Expr x_index = top_left_x_index + col_in_nb;
+        /*
+        Halide::Expr oob = y_index < 0 || y_index >= in.dim(1).extent() || x_index < 0 || x_index >= in.dim(0).extent();
+        im2col_f(x, y, n) = Halide::select(oob, 0.0f, in(x_index, y_index, c, n));*/
+        // no oob cos we're doing valid padding only
+        im2col_f(x, y) = in(x_index, y_index, c);
+        // Schedule
+        im2col_f.realize(out);
     }
 }

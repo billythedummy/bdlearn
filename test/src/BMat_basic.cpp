@@ -50,7 +50,7 @@ int test_BMat_matmul_simple() {
                 uint8_t t2 = s2.get(x, j);
                 sum += (t1 ? 1 : -1) * (t2 ? 1 : -1);
             }
-            std::cout << i << j << sum << *disp << std::endl;
+            // std::cout << i << j << sum << *disp << std::endl;
             if (*disp != sum) {
                 std::cerr << "test_BMat_matmul_simple failed at " << i << ", " << j;
                 std::cerr << ". Expected: " << sum << ", got: " << *disp << std::endl;
