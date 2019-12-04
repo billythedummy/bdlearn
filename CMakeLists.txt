@@ -18,9 +18,6 @@ add_library(bdlearn
     src/training/darknet_image_loader.c
 )
 
-link_directories (
-	~/Halide/bin
-)
 # dependencies
 target_link_libraries(bdlearn
     Halide
