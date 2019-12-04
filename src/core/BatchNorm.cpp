@@ -146,6 +146,11 @@ namespace bdlearn {
         Halide::Expr t_correction = gamma_view(c) * r_mean_view(c) * inv_std_dev;
         bnorm_i(x, y, c) = in(x, y, c) * gamma_view(c) * inv_std_dev + beta_view(c) - t_correction;
         // schedule
+        Halide::Var xy;
+        int space = in.dim(0).extent() * in.dim(1).extent();
+        Halide::Expr vec_xy = space > 32 ? 32 : space;
+        bnorm_i.fuse(x, y, xy)
+                .vectorize(xy, vec_xy);
         bnorm_i.realize(out);
     }
 
