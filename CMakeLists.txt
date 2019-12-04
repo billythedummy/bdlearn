@@ -9,7 +9,7 @@ add_library(bdlearn
     src/core/GAP.cpp
     src/core/Model.cpp
     src/core/SAMMEEnsemble.cpp
-    src/core/MaxPool.cpp
+
 
     src/training/BatchBlas.cpp
     src/training/SoftmaxCrossEntropy.cpp
