@@ -9,6 +9,7 @@ add_library(bdlearn
     src/core/GAP.cpp
     src/core/Model.cpp
     src/core/SAMMEEnsemble.cpp
+    src/core/MaxPool.cpp
 
     src/training/BatchBlas.cpp
     src/training/SoftmaxCrossEntropy.cpp
@@ -19,7 +20,7 @@ add_library(bdlearn
 
 # dependencies
 target_link_libraries(bdlearn
-    Halide
+    /homes/iws/jula99/455/Halide/bin
 )
 
 # include
