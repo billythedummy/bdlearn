@@ -3,14 +3,16 @@
 using namespace bdlearn;
 
 int test_CIFAR(void) {
-    const int batch_size = 25; //32, 8
+    const int batch_size = 16; //32, 8
     const int n_models = 5; // 1
     const bufdims in_dims = {.w=32, .h=32, .c=3};
     const int classes = 10;
     // make dataset
     DataSet ds;
-    ds.load_darknet_classification("/home/dhy1996/uwimg/cifar_tiny.train",
-                                "/home/dhy1996/uwimg/cifar.labels");
+    ds.load_darknet_classification("/home/dhy1996/uwimg/mnist.mini",
+                                "/home/dhy1996/uwimg/mnist.labels");
+    /*"/home/dhy1996/uwimg/cifar_tiny.train",
+                                "/home/dhy1996/uwimg/cifar.labels"*/
     std::cout << "Loading dataset done" << std::endl;
     // make ensemble
     SAMMEEnsemble en(true);

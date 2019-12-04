@@ -22,8 +22,7 @@ namespace bdlearn {
         Halide::Func out_f;
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
-        // not smart enough to optimize this
-        out_f.parallel(n);
+        // out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -49,7 +48,7 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        out_f.parallel(n);
+        //out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -75,7 +74,7 @@ namespace bdlearn {
         // Schedule
         // not smart enough to optimize this
         //Halide::Var xi, yi, xy, yii;
-        out_f.parallel(n);
+        //out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -131,7 +130,7 @@ namespace bdlearn {
         // no oob cos we're doing valid padding only
         im2col_f(x, y, n) = in(x_index, y_index, c, n);
         // Schedule
-        // need to test
+        /*
         Halide::Var x_outer, y_outer, x_inner, y_inner, tile_index;
         Halide::Expr tile_dim_x = out.dim(0).extent() > 64 ? 64 : out.dim(0).extent();
         Halide::Expr tile_dim_y = out.dim(1).extent() > 64 ? 64 : out.dim(1).extent();
@@ -143,7 +142,7 @@ namespace bdlearn {
         Halide::Expr pair_dim_y = out.dim(1).extent() > 2 ? 2 : out.dim(1).extent();
         im2col_f.tile(x_inner, y_inner, x_inner_outer, y_inner_outer, x_vectors, y_pairs, vec_dim_x, pair_dim_y)
                 .vectorize(x_vectors)
-                .unroll(y_pairs);
+                .unroll(y_pairs);*/
         im2col_f.realize(out);
     }
 
