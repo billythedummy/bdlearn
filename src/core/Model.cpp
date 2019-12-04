@@ -85,6 +85,11 @@ namespace bdlearn {
         register_last_layer(new_layer);
     }
 
+    void Model::append_gap() {
+        Layer* new_layer = new GAP(training_);
+        register_last_layer(new_layer);
+    }
+
     void Model::loss_softmax_cross_entropy() {
         loss_layer_ptr_.reset(new SoftmaxCrossEntropy());
     }

@@ -99,7 +99,7 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        out_f.parallel(n);
+        //out_f.parallel(n);
         out_f.realize(out);
     }
 

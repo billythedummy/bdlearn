@@ -99,6 +99,10 @@ namespace bdlearn {
         Halide::Buffer<float> x_hat_view(x_hat_.get(), cols, rows, channels_, batch_size);
         x_hat(x, y, c, n) = ( in(x, y, c, n) - mu_view(c) ) * Halide::fast_inverse_sqrt(var_view(c) + BDLEARN_EPS);
         // x_hat schedule
+        Halide::Var xy;
+        Halide::Expr vec_xy = rows * cols > 32 ? 32 : rows*cols;
+        x_hat.fuse(x, y, xy);
+        x_hat.vectorize(xy, vec_xy);
         x_hat.realize(x_hat_view);
 
         // output algo
@@ -107,13 +111,17 @@ namespace bdlearn {
         Halide::Buffer<float> beta_view(beta_.get(), channels_, "beta_view");
         out_func(x, y, c, n) = x_hat_view(x, y, c, n) * gamma_view(c) + beta_view(c);
         // output schedule
+        out_func.fuse(x, y, xy);
+        out_func.vectorize(xy, vec_xy);
         out_func.realize(out);
 
         // update running mean algo
+        Halide::Expr vec_r = channels_ > 32 ? 32 : channels_;
         Halide::Buffer<float> r_mean_view(r_mean_.get(), channels_, "r_mean_view");
         Halide::Func update_r_mean;
         update_r_mean(c) = (1.0f - BNORM_MOMENTUM) * r_mean_view(c) + BNORM_MOMENTUM * mu_view(c);
         // update running mean schedule
+        update_r_mean.vectorize(c, vec_r);
         update_r_mean.realize(r_mean_view);
 
         // update running var algo
@@ -121,6 +129,7 @@ namespace bdlearn {
         Halide::Func update_r_var;
         update_r_var(c) = (1.0f - BNORM_MOMENTUM) * r_var_view(c) + BNORM_MOMENTUM * var_view(c);
         // update running var schedule
+        update_r_var.vectorize(c, vec_r);
         update_r_var.realize(r_var_view);
     }
 
@@ -134,6 +143,7 @@ namespace bdlearn {
         Halide::Expr inv_std_dev = Halide::fast_inverse_sqrt(r_var_view(c) + BDLEARN_EPS);
         Halide::Expr t_correction = gamma_view(c) * r_mean_view(c) * inv_std_dev;
         bnorm_i(x, y, c) = in(x, y, c) * gamma_view(c) * inv_std_dev + beta_view(c) - t_correction;
+        // schedule
         bnorm_i.realize(out);
     }
 
@@ -219,14 +229,28 @@ namespace bdlearn {
         Halide::Func desc_gamma_f;
         Halide::Buffer<float> dgamma_view(dgamma_.get(), channels_);
         Halide::Buffer<float> gamma_view(gamma_.get(), channels_);
-        desc_gamma_f(c) -= lr * dgamma_view(c);
+        desc_gamma_f(c) = gamma_view(c) - lr * dgamma_view(c);
         desc_gamma_f.realize(gamma_view);
         // update beta
         Halide::Func desc_beta_f;
         Halide::Buffer<float> dbeta_view(dbeta_.get(), channels_);
         Halide::Buffer<float> beta_view(beta_.get(), channels_);
-        desc_beta_f(c) -= lr * dbeta_view(c);
+        desc_beta_f(c) = beta_view(c) - lr * dbeta_view(c);
         desc_beta_f.realize(beta_view);
+
+        /*
+        std::cout << "gamma: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << gamma_[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "beta: " << std::endl;
+        for (int i = 0; i < channels_; ++i) {
+            std::cout << beta_[i] << ", ";
+        }
+        std::cout << std::endl;
+        */
     }
 
     void BatchNorm::set_gamma(float* data) {
