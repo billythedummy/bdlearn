@@ -8,7 +8,7 @@ int test_MaxPool_forward_backward() {
     const int batch = 5;
     const int max = 17;
     const int X_size = w*h*c*batch;
-    const int Y_size = c*batch;
+    const int Y_size = 2*2*c*batch;
     MaxPool pool_test(2, 2);
     float X [X_size];
     float Y [Y_size];
@@ -34,13 +34,16 @@ int test_MaxPool_forward_backward() {
 
     pool_test.backward(X_view, Y_view);
     for (int i = 0; i < c * batch; i++) {
-        for (int j = 0; j < w * h; j++) {
-            std::cout << X[i*w*h + j] << ", ";
+        for (int j = 0; j < h; j++) {
+            for (int k = 0; k < w; ++k) {
+                 std::cout << X[i*w*h + j*w +k] << ", ";
+            }
+            std::cout << std::endl;
             /*
-            if (j % 2 == 0 && X[i] != max) {
+            if (j % 2 == 0 && X[i*w*h + j] != max) {
                 std::cout << "MaxPool backward_t failed: expected " << max << " but got " << X[i] << std::endl;
                 return -1;
-            } else if (X[i] != 0) {
+            } else if (X[i*w*h + j] != 0) {
                 std::cout << "MaxPool backward_t failed: expected 0 but got " << X[i] << std::endl;
                 return -1;
             }*/
