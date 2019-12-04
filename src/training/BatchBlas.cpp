@@ -131,7 +131,19 @@ namespace bdlearn {
         // no oob cos we're doing valid padding only
         im2col_f(x, y, n) = in(x_index, y_index, c, n);
         // Schedule
-        im2col_f.parallel(n);
+        // need to test
+        Halide::Var x_outer, y_outer, x_inner, y_inner, tile_index;
+        Halide::Expr tile_dim_x = out.dim(0).extent() > 64 ? 64 : out.dim(0).extent();
+        Halide::Expr tile_dim_y = out.dim(1).extent() > 64 ? 64 : out.dim(1).extent();
+        im2col_f.tile(x, y, x_outer, y_outer, x_inner, y_inner, tile_dim_x, tile_dim_y)
+                .fuse(x_outer, y_outer, tile_index)
+                .parallel(tile_index);
+        Halide::Var x_inner_outer, y_inner_outer, x_vectors, y_pairs;
+        Halide::Expr vec_dim_x = out.dim(0).extent() > 4 ? 4 : out.dim(0).extent();
+        Halide::Expr pair_dim_y = out.dim(1).extent() > 2 ? 2 : out.dim(1).extent();
+        im2col_f.tile(x_inner, y_inner, x_inner_outer, y_inner_outer, x_vectors, y_pairs, vec_dim_x, pair_dim_y)
+                .vectorize(x_vectors)
+                .unroll(y_pairs);
         im2col_f.realize(out);
     }
 
@@ -161,7 +173,7 @@ namespace bdlearn {
         Halide::Expr which_patch_clamped = Halide::clamp(which_patch, 0, out_width * out_height - 1);
         col2im_accum_f(x, y, c, n) += Halide::select(invalid, 0.0f, in(which_patch_clamped, row_index, n));
         // Schedule
-        col2im_accum_f.parallel(n);
+        //col2im_accum_f.parallel(n);
         col2im_accum_f.realize(out);
     }
 }

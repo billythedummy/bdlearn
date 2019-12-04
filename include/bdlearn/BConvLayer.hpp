@@ -11,6 +11,9 @@
 // for training
 #include "bdlearn/BatchBlas.hpp"
 
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+
 namespace bdlearn {
     class BConvLayer: public Layer {
         public:
@@ -25,7 +28,7 @@ namespace bdlearn {
                 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
                 std::default_random_engine generator (seed);
                 std::normal_distribution<float> dist(0.0f, sqrtf(2.0f / n));
-                for (int i = 0; i < size_; ++i) w_real[i] = dist(generator);
+                for (int i = 0; i < size_; ++i) w_real[i] = MAX(-0.99, MIN(0.99, dist(generator)));
                 // init w_ by sign(train_w_)
                 w_.sign(w_real);
                 train_w_.reset(w_real);

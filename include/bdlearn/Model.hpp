@@ -60,9 +60,12 @@ namespace bdlearn {
             int batch_size_;
             float lr_;
             // buffer for inputs/ outputs of each layer
+            /*
             std::unique_ptr<float[]> buf_i_;
             std::unique_ptr<float[]> buf_t_;
-            std::vector<int> buf_offsets_;
+            std::vector<int> buf_offsets_;*/
+            std::vector< std::unique_ptr<float[]> > buf_i_;
+            std::vector< std::unique_ptr<float[]> > buf_t_;
     };
 }
 

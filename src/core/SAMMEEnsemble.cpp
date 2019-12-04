@@ -26,7 +26,8 @@ namespace bdlearn {
             batchdata batch = dataset_->get_next_batch();
             Halide::Buffer<float> x_batch (batch.x_ptr, in_dims_.w, in_dims_.h, in_dims_.c, batch.size);
             Halide::Buffer<float> y_batch (batch.y_ptr, classes_, batch.size);
-            curr->train_step(x_batch, y_batch, static_cast<void*>(w_shuffled + batch_offset)); //loss args
+            float loss = curr->train_step(x_batch, y_batch, static_cast<void*>(w_shuffled + batch_offset));
+            std::cout << "Model " << current_m_i_ << " loss: " << loss << std::endl;
             batch_offset += batch.size;
             free_batch_data(batch);
         }
@@ -83,6 +84,53 @@ namespace bdlearn {
     void SAMMEEnsemble::add_model(Model* model) {
         model_ptrs_.push_back(std::unique_ptr<Model>(model));
         alphas_.push_back(1.0f);
+    }
+
+    float SAMMEEnsemble::eval(DataSet* dataset) {
+        const bufdims in_dims = dataset->get_x_dims();
+        const int classes = dataset->get_classes();
+        dataset->set_batch_size(batch_size_);
+        float total_errors = 0.0f;
+        for (int step = 0; step < dataset->get_steps(); ++step) {
+            batchdata batch = dataset->get_next_batch();
+            float batch_res [get_n_models() * batch.size * classes] = {0};
+            float batch_max [batch.size * classes] = {0};
+            int batch_amax [batch.size] = {0};
+
+            Halide::Buffer<float> batch_max_view(batch_max, classes, batch_size_);
+            Halide::Buffer<int> batch_amax_view(batch_amax, batch.size);
+            Halide::RDom c_r(0, classes);
+            Halide::Var c, b;
+            for (unsigned int i = 0; i < model_ptrs_.size(); ++i) {
+                float alpha = alphas_[i];
+                float* batch_out = batch_res + i *batch.size*classes;
+                Halide::Buffer<float> batch_in(batch.x_ptr, in_dims.w, in_dims.h, in_dims.c, batch.size);
+                model_ptrs_[i]->forward_batch(batch_out, batch_in);
+                // argmax
+                Halide::Buffer<float> batch_out_view(batch_out, classes, batch.size);
+                Halide::Func amax;
+                amax(b) = Halide::argmax(batch_out_view(c_r, b))[0];
+                amax.realize(batch_amax_view);
+                // add alpha to it
+                Halide::Func inc_alpha;
+                inc_alpha(c, b) = Halide::select(c == batch_amax_view(b),
+                                    batch_max_view(c, b) + alpha,
+                                    batch_max_view(c, b));
+                inc_alpha.realize(batch_max_view);
+            }
+            // Check errors
+            // argmax over batch_max
+            Halide::Func wrong_f;
+            Halide::Buffer<float> y_view(batch.y_ptr, classes, batch.size);
+            Halide::Expr is_wrong = Halide::argmax(y_view(c_r, b))[0] != Halide::argmax(batch_max_view(c_r, b))[0];
+            wrong_f(b) = Halide::select(is_wrong, 1, 0);
+            wrong_f.realize(batch_amax_view); // reusing amax_view here
+            for (int i = 0; i < batch.size; ++i) {
+                total_errors += batch_amax[i];
+            }
+            free_batch_data(batch);
+        }
+        return total_errors / dataset->get_epoch_size();
     }
 
     void SAMMEEnsemble::set_batch_size(const int batch_size) {
