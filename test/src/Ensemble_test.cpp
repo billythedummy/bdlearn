@@ -98,4 +98,5 @@ int test_save_load_ensemble() {
         dut.add_model(m);
     }
     dut.save_ensemble("./test/test_weights/EnsembleOut.csv");
+    return 0;
 }
