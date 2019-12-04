@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     //if (test_Model()) return -1;
     //if (test_DataSet()) return -1;
     //if (test_CIFAR()) return -1;
-    if (test_MaxPool_forward_t()) return -1;
+    if (test_MaxPool()) return -1;
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
