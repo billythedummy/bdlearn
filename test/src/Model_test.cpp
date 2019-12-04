@@ -115,7 +115,7 @@ int test_save_load_model() {
     dut.append_batch_norm();
     
     std::string in_path = "./test/test_weights/ModelTestIn.csv";
-    std::ifstream fin, fin1, fin2;
+    std::ifstream fin;
     fin.open(in_path, std::ios::in);
     if (fin.fail()) {
         std::cerr << "File failed to open" << std::endl;
@@ -133,20 +133,5 @@ int test_save_load_model() {
     dut.save_model(fout);
     fout.close();
     // compare output files
-    fin1.open(in_path, std::ios::in);
-    fin2.open(out_path, std::ios::in);
-    std::string line_in, line_out, temp;
-    while (fin >> temp) {
-        getline(fin, line_in);
-        getline(fin2, line_out);
-        if (line_in.compare(line_out) != 0) {
-            std::cout << line_in << std::endl;
-            std::cout << line_out << std::endl;
-            std::cerr << "Error in output file" << std::endl;
-            return -1;
-        }
-    }
-    fin1.close();
-    fin2.close();
-    return 0;
+    return compare_file_output(out_path, in_path);
 }
