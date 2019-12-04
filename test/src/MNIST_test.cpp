@@ -4,7 +4,7 @@ using namespace bdlearn;
 
 int test_MNIST(void) {
     const int batch_size = 100; //<=100
-    const int n_models = 1; // 1
+    const int n_models = 11; 
     const bufdims in_dims = {.w=28, .h=28, .c=1};
     const int classes = 10;
     // make dataset
@@ -25,28 +25,13 @@ int test_MNIST(void) {
         m->append_batch_norm();
         m->append_bconv(3, classes); 
         m->append_gap();
-        //m->loss_weighted_softmax_cross_entropy();
-        m->loss_softmax_cross_entropy();
-        /*
-        m->append_batch_norm();
-        m->append_bconv(5, 32);
-        m->append_batch_norm();
-        m->append_bconv(1, 16);
-        m->append_batch_norm();
-        m->append_bconv(5, 32);
-        m->append_batch_norm();
-        m->append_bconv(1, 16);
-        m->append_batch_norm();
-        m->append_bconv(3, 64);
-        m->append_gap();
-        m->append_batch_norm();
-        m->append_bconv(1, classes);
-        m->loss_softmax_cross_entropy();*/
+        m->loss_weighted_softmax_cross_entropy();
+        //m->loss_softmax_cross_entropy();
         en.add_model(m);
     }
     en.set_batch_size(batch_size);
     en.set_dataset(&ds);
-    en.set_lr(0.01f);
+    en.set_lr(0.001f);
     // fuh reel
     for (int i=0; i < 100; ++i) {
         if (i % n_models == 0) {
