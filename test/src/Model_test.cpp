@@ -116,7 +116,7 @@ int test_save_load_model() {
     
     std::string in_path = "./test/test_weights/ModelTestIn.csv";
     std::ifstream fin, fin2;
-    fin.open(in_path, std::ios:in);
+    fin.open(in_path, std::ios::in);
     if (fin.fail()) {
         std::cerr << "File failed to open" << std::endl;
         return -1;
@@ -144,5 +144,7 @@ int test_save_load_model() {
             return -1;
         }
     }
+    fin.close();
+    fin2.close();
     return 0;
 }
