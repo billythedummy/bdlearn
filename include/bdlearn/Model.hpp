@@ -29,7 +29,7 @@ namespace bdlearn {
             void forward_batch(float* out, Halide::Buffer<float> in);
             float eval(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* is_wrong_out);
             void save_model(std::ofstream& fout);
-            void load_model(std::ofstream& fin);
+            void load_model(std::ifstream& fin);
             // layers
             void append_batch_norm(void);
             void append_bconv(const int k, const int out_c, const int s=1);
