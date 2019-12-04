@@ -66,4 +66,10 @@ namespace bdlearn {
             buf[max_x_arr[i] + max_x_arr[i] * max_y_arr[i]] = max_val_arr[i]; 
         } 
     }
+
+    bufdims MaxPool::calc_out_dim(bufdims in_dims) {
+        return {1, 1, in_dims.c};
+    }
+
+    void MaxPool::update(float lr) {}
 }

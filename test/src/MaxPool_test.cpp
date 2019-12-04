@@ -1,4 +1,6 @@
 #include "MaxPool_test.hpp"
+using namespace bdlearn;
+
 int test_MaxPool_forward_t() {
     const int w = 4;
     const int h = 4;
@@ -7,7 +9,7 @@ int test_MaxPool_forward_t() {
     const int X_size = w*h*c*batch;
     const int Y_size = c*batch;
 
-    MaxPool::MaxPool t1(2, 2);
+    MaxPool t1(2, 2);
     float X [X_size];
     for (int i = 0; i < c * batch; i++) {
         for (int j = 0; j < w * h; j++) {
