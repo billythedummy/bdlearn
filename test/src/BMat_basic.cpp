@@ -179,7 +179,7 @@ int test_BMat_timing() {
         time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
         dur = time_span.count()*1000000;
         total_time += dur;
-        std::cout << "BMat::matmul took " << dur << " microseconds";
+        std::cout << "BMat::matmul took " << dur << " microseconds" << std::endl;
     }
     std::cout << "Average time: " << total_time / iter << " microseconds" << std::endl;
     return 0;
