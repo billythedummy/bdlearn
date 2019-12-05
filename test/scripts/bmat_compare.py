@@ -94,6 +94,6 @@ for _ in range(10):
     end = timer()
     dt = (end - start)*1000
     total_time += dt
-    print("Numpy took ", dt, " ms")
+    print("Numpy took", dt, "ms")
 avg = total_time / iter
 print("Average time:", avg)
