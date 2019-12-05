@@ -84,7 +84,16 @@ B = np.asarray(B).astype(float)
 A = np.resize(A, (37,23))
 B = np.resize(B, (23,29))
 
-start = timer()
 C = A @ B
-end = timer()
-print("Numpy took ", (end - start)*1000, " ms")
+C = A @ B
+total_time = 0
+iter = 10
+for _ in range(10):
+    start = timer()
+    C = A @ B
+    end = timer()
+    dt = (end - start)*1000
+    total_time += dt
+    print("Numpy took ", dt, " ms")
+avg = total_time / iter
+print("Average time:", avg)
