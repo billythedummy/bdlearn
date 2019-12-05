@@ -34,11 +34,14 @@ int main(int argc, char **argv) {
     //if (test_Ensemble()) return -1;
     //if (test_Model()) return -1;
     //if (test_DataSet()) return -1;
+    /*
     if (test_save_load_BConvLayer()) return -1;
     if (test_save_load_BatchNorm()) return -1;
     if (test_save_load_model()) return -1;
     if (test_save_load_ensemble()) return -1; 
+    */
     // if (test_CIFAR()) return -1;
+    test_BMat_timing();
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
