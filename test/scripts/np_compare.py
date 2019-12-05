@@ -84,16 +84,18 @@ B = np.asarray(B).astype(float)
 A = np.resize(A, (37,23))
 B = np.resize(B, (23,29))
 
-C = A @ B
-C = A @ B
+def matmul(A, B):
+  C = A @ B
+matmul(A, B)
+matmul(A, B)
 total_time = 0
 iter = 10
 for _ in range(10):
     start = timer()
-    C = A @ B
+    matmul(A, B)
     end = timer()
-    dt = (end - start)*1000
+    dt = (end - start)*1000000
     total_time += dt
-    print("Numpy took", dt, "ms")
+    print("Numpy took", dt, "microseconds")
 avg = total_time / iter
 print("Average time:", avg)

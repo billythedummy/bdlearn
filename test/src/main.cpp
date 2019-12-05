@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <bdlearn/bdlearn.hpp>
 
 #include "BMat_basic.hpp"
@@ -37,8 +38,9 @@ int main(int argc, char **argv) {
     //if (test_Model()) return -1;
     //if (test_DataSet()) return -1;
     //if (test_CIFAR()) return -1;
-    if (test_MNIST()) return -1;
+    //if (test_MNIST()) return -1;
     //if (test_MaxPool()) return -1;
+    test_BMat_timing();
     std::cout << "All tests passed!" << std::endl;
     return 0;
 }
