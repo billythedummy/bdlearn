@@ -98,4 +98,4 @@ for _ in range(10):
     total_time += dt
     print("Numpy took", dt, "microseconds")
 avg = total_time / iter
-print("Average time:", avg)
+print("Average time:", avg, "microseconds")

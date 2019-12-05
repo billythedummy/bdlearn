@@ -181,6 +181,6 @@ int test_BMat_timing() {
         total_time += dur;
         std::cout << "BMat::matmul took " << dur << " microseconds";
     }
-    std::cout << "Average time: " << total_time / iter << std::endl;
+    std::cout << "Average time: " << total_time / iter << " microseconds" << std::endl;
     return 0;
 }
