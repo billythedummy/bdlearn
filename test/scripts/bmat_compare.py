@@ -87,4 +87,4 @@ B = np.resize(B, (23,29))
 start = timer()
 C = A @ B
 end = timer()
-print(start - end)
+print("Numpy took ", (end - start)*1000, " ms")
