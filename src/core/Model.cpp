@@ -39,8 +39,21 @@ namespace bdlearn {
         memcpy(out, src_ptr, sizeof(float) * n_floats);
     }
 
+    // needs testing and compiling
     void Model::forward_i(Halide::Buffer<float> out, Halide::Buffer<float> in) {
-
+        bufdims this_layer_out_dims;
+        for (unsigned int i = 0; i < layer_ptrs_.size(); ++i) {
+            this_layer_out_dims = layer_out_dims_[i];
+            Halide::Buffer<float> this_layer_out(buf_i_[i].get(),
+                                                this_layer_out_dims.w,
+                                                this_layer_out_dims.h,
+                                                this_layer_out_dims.c);
+            layer_ptrs_[i]->forward_i(this_layer_out, in);
+            in = this_layer_out;
+        }
+        const int n_floats = this_layer_out_dims.w * this_layer_out_dims.h * this_layer_out_dims.c;
+        const float* src_ptr = buf_i_.back().get();
+        memcpy(out.get(), src_ptr, sizeof(float) * n_floats);
     }
 
     float Model::eval(Halide::Buffer<float> X, Halide::Buffer<float> Y, void* is_wrong_out) {
