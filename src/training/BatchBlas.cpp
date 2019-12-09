@@ -22,7 +22,7 @@ namespace bdlearn {
         Halide::Func out_f;
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
-        // out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -48,7 +48,7 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -74,7 +74,7 @@ namespace bdlearn {
         // Schedule
         // not smart enough to optimize this
         //Halide::Var xi, yi, xy, yii;
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -98,7 +98,7 @@ namespace bdlearn {
         out_f(x, y, n) = batch_matmul(x, y, n);
         // Schedule
         // not smart enough to optimize this
-        //out_f.parallel(n);
+        out_f.parallel(n);
         out_f.realize(out);
     }
 
@@ -173,7 +173,7 @@ namespace bdlearn {
         Halide::Expr which_patch_clamped = Halide::clamp(which_patch, 0, out_width * out_height - 1);
         col2im_accum_f(x, y, c, n) += Halide::select(invalid, 0.0f, in(which_patch_clamped, row_index, n));
         // Schedule
-        //col2im_accum_f.parallel(n);
+        col2im_accum_f.parallel(n);
         col2im_accum_f.realize(out);
     }
 }

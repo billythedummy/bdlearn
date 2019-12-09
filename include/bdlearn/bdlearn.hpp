@@ -21,4 +21,6 @@
 #include "bdlearn/WeightedSoftmaxCrossEntropy.hpp"
 #include "bdlearn/DataSet.hpp"
 #include "bdlearn/darknet_image_loader.h"
+// scheduler
+#include "bdlearn/AutoScheduler.hpp"
 #endif

@@ -116,6 +116,7 @@ namespace bdlearn {
                 inc_alpha(c, b) = Halide::select(c == batch_amax_view(b),
                                     batch_max_view(c, b) + alpha,
                                     batch_max_view(c, b));
+                inc_alpha.parallel(b);
                 inc_alpha.realize(batch_max_view);
             }
             // Check errors
@@ -142,6 +143,7 @@ namespace bdlearn {
             */
 
             wrong_f(b) = Halide::select(is_wrong, 1, 0);
+            wrong_f.parallel(b);
             wrong_f.realize(batch_amax_view); // reusing amax_view here
             for (int i = 0; i < batch.size; ++i) {
                 total_errors += batch_amax[i];
@@ -183,5 +185,4 @@ namespace bdlearn {
         // reset current_m_i
         current_m_i_ = 0;
     }
-
 }

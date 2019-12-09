@@ -9,8 +9,8 @@ int test_MNIST(void) {
     const int classes = 10;
     // make dataset
     DataSet ds;
-    ds.load_darknet_classification("/home/dhy1996/uwimg/mnist.mini",
-                                "/home/dhy1996/uwimg/mnist.labels");
+    ds.load_darknet_classification("/homes/iws/jula99/455/bdlearn/build/mnist.train_out",
+                                "/homes/iws/jula99/455/uwimg/mnist.labels");
     std::cout << "Loading dataset done" << std::endl;
     // make ensemble
     SAMMEEnsemble en(true);
